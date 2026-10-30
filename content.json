@@ -1,0 +1,356 @@
+{
+  "v": 1,
+  "head": {
+    "title": "Scroll, drag, or use the arrow keys to move through my timeline. Each role is a case file. Details are there for whoever goes looking..",
+    "sub": "20,000 fruit points (for those who find all the post-its.. Good luck!"
+  },
+  "ui": {
+    "education": "Education",
+    "legendEdu": "Education",
+    "postit": "Post-it",
+    "overview": "Overview",
+    "foundPosts": "found post-its",
+    "tabsHint": "",
+    "hint": "Drag to pan, or use",
+    "legendRole": "Role",
+    "legendClient": "Client engagement",
+    "legendMilestone": "Milestone",
+    "openFile": "Open file",
+    "headline": "The headline result",
+    "hold": "Press and hold to reveal",
+    "ask": "Ask about it",
+    "pick": "Pick a client",
+    "done": "You found everything in this file. Ask me about it in person.",
+    "uncovered": "uncovered"
+  },
+  "edu": {
+    "label": "Milestone:",
+    "text": "Minneapolis College of Art & Design"
+  },
+  "roles": [
+    {
+      "id": "optum-sr",
+      "lane": 0,
+      "s": 2014.0833,
+      "e": 2017.25,
+      "av": "Op",
+      "co": "Optum",
+      "role": "Senior UX Designer",
+      "dates": "02/2014 – 04/2017",
+      "title": "Senior UX Designer",
+      "org": "Optum (UnitedHealth Group)",
+      "lede": "UX design on a shared services team, with 3 to 12 month engagements across the business.",
+      "metric": {
+        "v": "$50M+",
+        "c": "monthly revenue increase from the award-winning OptumRx mobile app in its first quarter, with month-over-month growth after."
+      },
+      "probes": [
+        [
+          "Why did it win an award?",
+          "Launched in 2014,  the new OptumRx app won the Silver A’ Design Award for accessibility in the \"differently abled users\" category: prescription renewal and refill time dropped from minutes to under 30 seconds, significantly helping elderly and disabled people."
+        ],
+        [
+          "Any startup work?",
+          "Lead designer for Harken Health, a UHC-funded experimental startup."
+        ],
+        [
+          "Legacy systems?",
+          "Redesigned green-screen claims processing software and led in-lab usability test planning and facilitation."
+        ]
+      ]
+    },
+    {
+      "id": "azul",
+      "lane": 0,
+      "s": 2019,
+      "e": 2020,
+      "av": "A7",
+      "co": "Azul 7",
+      "role": "Staff Designer, Research Lead",
+      "dates": "01/2019 – 01/2020",
+      "title": "Staff Designer, Research Lead",
+      "org": "Azul 7 (contract)",
+      "lede": "Staff designer and dedicated UX researcher for agency clients, and a Design Thinking coach for corporate teams.",
+      "metric": {
+        "v": "100+",
+        "c": "beta testers recruited from a UX booth at a global conference, learning the goals and challenges of two merging organizations. The follow-up 90-minute workshop was top-rated."
+      },
+      "probes": [
+        [
+          "What was the merger?",
+          "Led discovery for the Calabrio and Teleopti merger, including product research and user journey mapping."
+        ],
+        [
+          "Field research?",
+          "Facilitated a day-in-the-life research study at a Capital One call center."
+        ],
+        [
+          "Coaching?",
+          "Coached corporate teams through a 3-day Design Thinking bootcamp."
+        ]
+      ]
+    },
+    {
+      "id": "optum-cd",
+      "lane": 0,
+      "s": 2020.9167,
+      "e": 2022.6667,
+      "av": "Op",
+      "co": "Optum",
+      "role": "Creative Director, Design Systems",
+      "dates": "12/2020 – 09/2022",
+      "title": "Creative Director, Design Systems",
+      "org": "Optum (UnitedHealth Group)",
+      "lede": "Creative Director for UX/UI and the Clinical Design System.",
+      "metric": {
+        "v": "16 → 1",
+        "c": "component libraries consolidated into Netra, the organization’s first multi-themed, token-driven design system, built into the Enterprise Clinical Platform so teams could build micro-products on their own."
+      },
+      "probes": [
+        [
+          "How big was the team?",
+          "Hired and led 5 UI product designers and mentored 25+ federated designers."
+        ],
+        [
+          "What happened in 2020?",
+          "Enabled the launch of UnitedHealth’s first virtual care platform during the COVID-19 shutdown."
+        ],
+        [
+          "How did it stay healthy?",
+          "Established a governance and contribution model to keep quality high at scale."
+        ],
+        [
+          "Did people use it?",
+          "Drove enterprise-wide adoption, improving brand cohesion, accessibility and consistency."
+        ]
+      ]
+    },
+    {
+      "id": "apple",
+      "lane": 0,
+      "s": 2022.8333,
+      "e": 2025,
+      "av": "Ap",
+      "co": "Apple",
+      "role": "Senior Product Designer",
+      "dates": "11/2022 – 01/2025",
+      "title": "Senior Product Designer",
+      "org": "Apple, via Bitovi (UX consultant)",
+      "lede": "Sole design consultant on enterprise B2B tools for Apple’s external supply chain partners.",
+      "metric": {
+        "v": "Ask Apple",
+        "c": "A chatbot and Slack integration that scaled B2B support for supply chain partners and laid the groundwork for agentic, human-in-the-loop UX."
+      },
+      "probes": [
+        [
+          "How did the work start?",
+          "Led discovery research, human-centered design workshops and design-integrity playbooks for high-touch systems."
+        ],
+        [
+          "How old were the systems?",
+          "Modernized 10+ year-old legacy systems behind Apple’s global infrastructure, including SupplierCare and Partner Portal."
+        ],
+        [
+          "What got less painful?",
+          "Improved supply chain tools like Ocean Shipment Tracking to reduce friction, human error and delays."
+        ],
+        [
+          "Something unexpected?",
+          "Designed an internal label generation tool that brought multimillion-dollar jobs in-house and replaced InDesign."
+        ]
+      ]
+    },
+    {
+      "id": "aroris-f",
+      "lane": 0,
+      "s": 2025.25,
+      "e": 2026.25,
+      "av": "Ar",
+      "co": "Aroris Health",
+      "role": "Founding Product Designer",
+      "dates": "04/2025 – 04/2026",
+      "found": true,
+      "title": "Founding Product Designer",
+      "org": "Aroris Health",
+      "lede": "Moved the business from three years of offline services and spreadsheet workflows to a fully operational AI-powered SaaS platform.",
+      "metric": {
+        "v": "40 / 40",
+        "c": "clients retained through contract renewal in year one, driven by day-one value from the flagship feature."
+      },
+      "probes": [
+        [
+          "What did you build first?",
+          "Designed the MVP platform, interviewed clients and launched feature sets to beta testers."
+        ],
+        [
+          "Was there a system?",
+          "Created and launched the Prima Design System."
+        ],
+        [
+          "What did the practice look like?",
+          "Established the design practice and a collaborative product design and discovery lifecycle."
+        ]
+      ]
+    },
+    {
+      "id": "aroris-p",
+      "lane": 0,
+      "s": 2026.25,
+      "e": "now",
+      "av": "Ar",
+      "co": "Aroris Health",
+      "role": "Principal Product Designer",
+      "dates": "04/2026 – Present",
+      "current": true,
+      "title": "Principal Product Designer",
+      "org": "Aroris Health",
+      "lede": "Leading agentic AI product design on a platform for private healthcare practitioners.",
+      "metric": {
+        "v": "$84,000",
+        "c": "in revenue gained by one of the first 8 beta clients from Live Claims Monitoring, the flagship tool I designed."
+      },
+      "probes": [
+        [
+          "Who’s on the team?",
+          "I manage the design lead and oversee end-to-end UX/UI for the platform."
+        ],
+        [
+          "Where does AI come in?",
+          "Integrating agentic experiences that help practitioners manage revenue and better serve their patients."
+        ],
+        [
+          "How is direction set?",
+          "Setting design direction on core feature sets during discovery, in close collaboration with the Director of Product and VP."
+        ],
+        [
+          "What about the system?",
+          "Maturing the Prima Design System and leading the effort to document how the team uses AI tools."
+        ]
+      ]
+    },
+    {
+      "id": "contract",
+      "lane": 1,
+      "s": 2012,
+      "e": 2020.9167,
+      "logo": true,
+      "thin": true,
+      "clients": true,
+      "co": "Independent Design Consultant",
+      "role": "UX/UI Designer (various clients incl. Best Buy, Target, Securian Financial, Mayo Clinic)",
+      "dates": "01/2011 – 12/2020",
+      "title": "Independent Design Consultant",
+      "org": "UX/UI Designer for various clients",
+      "lede": "A decade of contract engagements alongside full-time roles, across retail, finance and healthcare.",
+      "metric": null,
+      "probes": [
+        [
+          "Best Buy, 2013",
+          "As UX Researcher, established Best Buy’s first enterprise research team, created usability testing and heuristic evaluation frameworks, and led testing for internal UX teams."
+        ],
+        [
+          "Mayo Clinic, 2016",
+          "As UX/UI Design Principal, designed remote patient monitoring apps."
+        ],
+        [
+          "Target, 2017",
+          "As Senior UX Designer, reimagined support and call center applications and strategically sunset a Salesforce product."
+        ],
+        [
+          "Optum Service Design Studio, 2017",
+          "As Design Research Lead, led research for the AARP and UnitedHealth Group partnership."
+        ],
+        [
+          "Securian Financial, 2018",
+          "As UX Lead, led the redesign of call center software for policyholder claims and payments."
+        ]
+      ]
+    },
+    {
+      "id": "mcad",
+      "kind": "edu",
+      "lane": 1,
+      "s": 2011,
+      "e": 2011.9,
+      "thin": true,
+      "av": "M",
+      "co": "MCAD",
+      "role": "BFA, Design & Entrepreneurial Studies",
+      "dates": "2007 – 2011",
+      "title": "BFA, Design and Entrepreneurial Studies",
+      "org": "Minneapolis College of Art & Design",
+      "lede": "",
+      "metric": null,
+      "probes": []
+    }
+  ],
+  "nodes": [
+    {
+      "t": 2012.5,
+      "name": "Best Buy",
+      "sub": "UX Researcher, 2013",
+      "probe": 0
+    },
+    {
+      "t": 2016.4167,
+      "name": "Mayo Clinic",
+      "sub": "UX/UI Design Principal, 2016",
+      "probe": 1
+    },
+    {
+      "t": 2017.1667,
+      "name": "Target",
+      "sub": "Senior UX Designer, 2017",
+      "probe": 2
+    },
+    {
+      "t": 2017.6667,
+      "name": "Optum Service Design Studio",
+      "sub": "Design Research Lead, 2017",
+      "probe": 3
+    },
+    {
+      "t": 2018.4167,
+      "name": "Securian Financial",
+      "sub": "UX Lead, 2018",
+      "probe": 4
+    }
+  ],
+  "miles": [
+    {
+      "t": 2015.1667,
+      "name": "Silver A’ Design Award",
+      "sub": "Accessibility, OptumRx · 03/2015"
+    },
+    {
+      "t": 2016.0833,
+      "name": "Seth Godin’s altMBA",
+      "sub": "Graduate · 02/2016"
+    },
+    {
+      "t": 2020.4167,
+      "name": "Founded Black Designers Ignite",
+      "sub": "Community · 06/2020"
+    },
+    {
+      "t": 2022,
+      "name": "Mentor Match Program",
+      "sub": "Launched · 01/2022"
+    },
+    {
+      "t": 2025.5,
+      "name": "90-Second Pitch Winner",
+      "sub": "Village Back · 07/2025"
+    },
+    {
+      "t": 2026.0833,
+      "name": "AI Design Bootcamp",
+      "sub": "Memorisely · 02/2026"
+    },
+    {
+      "t": 2026.75,
+      "name": "Hack the Gap, 2nd place",
+      "sub": "Common Plate · 10/2026"
+    }
+  ]
+}
