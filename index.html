@@ -119,7 +119,7 @@ p{margin:0}
 .role .av{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--paper);font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:-.02em;font-variation-settings:"wdth" 85;transition:background .25s,color .25s}
 .role.current .av,.role:hover .av,.role:focus-visible .av{background:var(--lime);color:var(--on-lime);box-shadow:0 0 0 1.5px var(--ink)}
 .role.thin .av{width:28px;height:28px;font-size:11px}
-.role:hover,.role:focus-visible{z-index:6}
+.role:not(.static):hover,.role:not(.static):focus-visible{z-index:6}
 .role .lbl strong{display:block;font-family:var(--display);font-size:22px;line-height:1.05;letter-spacing:-.01em;font-variation-settings:"wdth" 88}
 .role .lbl small{display:block;font-size:14px;color:var(--ink-2);margin-top:3px}
 .role .pill{display:block;height:100%;border-radius:999px;background:var(--bar);position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
@@ -130,7 +130,9 @@ p{margin:0}
 .role.thin .peek em{padding:1px 6px;border-width:1px}
 .role:not(.static):hover .pill::after,.role:not(.static):focus-visible .pill::after{transform:scaleX(1)}
 .role:not(.static):hover .lbl,.role:not(.static):focus-visible .lbl{transform:translateY(-6px) scale(1.2)}
-.role.static{cursor:inherit}
+.role.static{cursor:inherit;pointer-events:none}
+.role.static .lbl{pointer-events:auto}
+.role.static:hover .av,.role.static .av{background:#2b2b2b;color:#ffffff;box-shadow:none}
 /* education: outlined, dotted bar instead of a solid role bar */
 .role.edu{cursor:default}
 .role.edu .pill{background:var(--paper-2);box-shadow:inset 0 0 0 2px var(--ink);
@@ -151,7 +153,7 @@ p{margin:0}
 .role.thin .lbl strong{font-size:18px}
 .role.found .pill::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent 0 6px,color-mix(in srgb,var(--lime) 60%,transparent) 6px 9px);z-index:1}
 
-.node{position:absolute;width:24px;height:24px;margin-left:-12px;margin-top:-4px;border-radius:50%;background:none;border:0;padding:0;cursor:pointer;z-index:2}
+.node{position:absolute;width:24px;height:24px;margin-left:-12px;margin-top:-4px;border-radius:50%;background:none;border:0;padding:0;cursor:pointer;z-index:7}
 .node::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--lime);border:2px solid var(--ink);transition:transform .35s cubic-bezier(.2,.8,.2,1),background .2s}
 .node:hover::before,.node:focus-visible::before{transform:scale(1.25);background:var(--lime)}
 .node .tip{bottom:calc(100% + 18px);font-size:15px;padding:10px 14px;transform-origin:50% 100%}
@@ -930,7 +932,7 @@ const SPRITES={
  trophy:["..YYYYYYYY..","YYYWYYYYYyYY","Y.YWYYYYYy.Y","Y.YWYYYYYy.Y",".YYWYYYYYyY.","...YYYYYy...","....YYyy....",".....Yy.....",".....Yy.....","....YYYy....","...BBBBBB...","...BBBBBB..."],
  key:["....KKKK....","...KkKKkK...","...KK..KK...","...KkKKkK...","....KKKK....",".....KK.....",".....KK.....",".....KKKK...",".....KK.....",".....KKK....",".....KK.....","............"]
 };
-const FRUIT_POINTS={cherry:100,strawberry:300,orange:500,apple:700,melon:1000,bell:3000,key:5000,trophy:74000};
+const FRUIT_POINTS={cherry:100,strawberry:300,orange:500,apple:700,melon:1000,bell:3000,key:5000,trophy:7400};
 const FRUIT_NAMES={trophy:'Trophy',cherry:'Cherries',strawberry:'Strawberry',orange:'Orange',apple:'Apple',melon:'Melon',bell:'Bell',key:'Key'};
 const FRUIT_ORDER=['cherry','strawberry','orange','apple','melon','bell','key'];
 function spriteSVG(name, px){
