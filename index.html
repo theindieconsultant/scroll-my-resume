@@ -284,7 +284,12 @@ p{margin:0}
 .f-pane.has-img{grid-template-columns:minmax(0,1fr)}
 .f-img{position:absolute;top:0;right:0;bottom:0;width:46%;margin:0;z-index:0;overflow:hidden;
   -webkit-mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.55) 12%,#000 30%);mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.55) 12%,#000 30%)}
-.f-img img{display:block;width:100%;height:100%;max-width:100%;object-fit:cover;object-position:50% 50%}
+.f-img img{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:100%;object-fit:cover;object-position:50% 50%;opacity:0;transition:opacity .6s}
+.f-img img.on{opacity:1}
+.f-dots{position:absolute;right:16px;bottom:14px;z-index:2;display:flex;gap:8px}
+.f-dots button{width:12px;height:12px;padding:0;border-radius:50%;border:2px solid #ffffff;background:transparent;cursor:pointer;box-shadow:0 0 0 1px rgba(0,0,0,.35)}
+.f-dots button[aria-pressed="true"]{background:#d5f53c}
+.f-dots button:focus-visible{outline:2px solid #d5f53c;outline-offset:2px}
 .f-img::before{content:"";position:absolute;inset:0;z-index:1;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);
   -webkit-mask-image:linear-gradient(90deg,#000 0,#000 8%,transparent 34%);mask-image:linear-gradient(90deg,#000 0,#000 8%,transparent 34%)}
 @media (max-width:640px){
@@ -459,7 +464,8 @@ const DEFAULT = {
    probes:[
      ["What was the merger?","Led discovery for the Calabrio and Teleopti merger, including product research and user journey mapping."],
      ["Field research?","Facilitated a day-in-the-life research study at a Capital One call center."],
-     ["Coaching?","Coached corporate teams through a 3-day Design Thinking bootcamp."]]},
+     ["Coaching?","Coached corporate teams through a 3-day Design Thinking bootcamp."],
+     ["How did the booth become a pilot group?", "Over 3 days, 85 people (over 10% of attendees) signed up to join my client’s ongoing pilot group, so the team had regular access to real users after the conference."]]},
   {id:"optum-cd", lane:0, s:d(2020,12), e:d(2022,9), av:"Op", co:"Optum", role:"Creative Director, Design Systems", dates:"12/2020 – 09/2022",
    title:"Creative Director, Design Systems", org:"Optum (UnitedHealth Group)",
    lede:"Creative Director for UX/UI and the Clinical Design System.",
@@ -678,7 +684,18 @@ const folderWrap=document.getElementById('folderWrap'), folderEl=document.getEle
 const gTabs=document.getElementById('gTabs'), gStage=document.getElementById('gStage'), gCount=document.getElementById('gCount');
 const gPrev=document.getElementById('gPrev'), gNext=document.getElementById('gNext');
 let gTab=0, gSeen=new Set(), gVaultOpen=false;
-const IMAGES = { 'optum-sr': { 0: { src:'optumrx-award.jpg', alt:'The OptumRx mobile site on a phone, from the A’ Design Award entry' } } };
+const DARK='#353837';
+const IMAGES = {
+  'optum-sr': { 0: { src:'optumrx-award.jpg', alt:'The OptumRx mobile site on a phone, from the A’ Design Award entry' } },
+  'azul': {
+    0: { src:'azul-postit-wall.jpg', alt:'The post-it wall of feedback at the Calabrio Customer Connect booth', fit:'contain', bg:DARK },
+    1: [ { src:'azul-call-center.jpg', alt:'Capital One call center monitors and research materials from the day-in-the-life study', fit:'contain', bg:'#ffffff' },
+         { src:'azul-day-in-life.jpg', alt:'Day-in-the-life contextual interviews: 12 interviews on day 1 and 6 on day 2', fit:'contain', bg:'#ffffff' } ],
+    2: { src:'azul-candid.jpg', alt:'Conference portraits and candid conversations at the Calabrio booth', fit:'contain', bg:DARK },
+    3: { src:'azul-feedback-loop.jpg', alt:'Creating a feedback loop: sign-up sheet for the Calabrio pilot test group', fit:'contain', bg:DARK }
+  }
+};
+let imgTimer=null;
 const isFolder = r => !!r;
 const isOpen = ()=> !file.hidden || !folderWrap.hidden;
 function bindHold(h, v, onOpen){
@@ -710,7 +727,7 @@ function fillFolder(animate){
     gTabs.append(b);
   });
   // pane
-  gStage.textContent='';
+  gStage.textContent=''; clearInterval(imgTimer);
   const pane=document.createElement('div'); pane.className='f-pane'+(animate?' anim':''); pane.id='gpane'; pane.setAttribute('role','tabpanel'); pane.setAttribute('aria-labelledby','gtab'+gTab);
   if(gTab===0){
     const left=document.createElement('div'); left.style.display='grid'; left.style.gap='12px'; left.style.alignContent='start';
@@ -732,7 +749,20 @@ function fillFolder(animate){
     body.append(num, T('h3','f-q',P+'probes.'+j+'.0')); note.append(body);
     pane.append(note, T('p','f-a',P+'probes.'+j+'.1'));
     const im = (IMAGES[r.id]||{})[j];
-    if(im){ pane.classList.add('has-img'); const fig=document.createElement('figure'); fig.className='f-img'; const img=document.createElement('img'); img.src=im.src; img.alt=im.alt; img.decoding='async'; fig.append(img); pane.append(fig); }
+    if(im){
+      const list=Array.isArray(im)?im:[im];
+      pane.classList.add('has-img'); const fig=document.createElement('figure'); fig.className='f-img';
+      const imgs=list.map((m,n)=>{ const img=document.createElement('img'); img.src=m.src; img.alt=m.alt; img.decoding='async'; if(m.fit) img.style.objectFit=m.fit; if(m.bg) img.style.background=m.bg; if(n===0) img.classList.add('on'); fig.append(img); return img; });
+      if(list[0].bg) fig.style.background=list[0].bg;
+      if(list.length>1){
+        let cur=0; const dots=document.createElement('div'); dots.className='f-dots';
+        const show=n=>{ imgs[cur].classList.remove('on'); dots.children[cur].setAttribute('aria-pressed','false'); cur=n; imgs[cur].classList.add('on'); dots.children[cur].setAttribute('aria-pressed','true'); fig.style.background=list[cur].bg||''; };
+        list.forEach((m,n)=>{ const d=document.createElement('button'); d.type='button'; d.setAttribute('aria-label','Show image '+(n+1)+' of '+list.length); d.setAttribute('aria-pressed', n===0?'true':'false'); d.addEventListener('click',()=>{ show(n); clearInterval(imgTimer); }); dots.append(d); });
+        fig.append(dots);
+        if(!reduce) imgTimer=setInterval(()=>{ if(!fig.isConnected){ clearInterval(imgTimer); return; } if(!fig.matches(':hover')) show((cur+1)%imgs.length); }, 4500);
+      }
+      pane.append(fig);
+    }
   }
   gStage.append(pane);
   gCount.textContent = `${gSeen.size} of ${r.probes.length} ${C.ui.foundPosts || C.ui.found || 'found post-its'}`;
