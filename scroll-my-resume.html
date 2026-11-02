@@ -388,7 +388,7 @@ html.world .viewport.dragging{cursor:grabbing}
 .wl-row:hover,.wl-row:focus-visible{background:color-mix(in srgb,var(--lime) 45%,transparent)}
 .wl-num{display:grid;place-items:center;width:28px;height:28px;border:2.5px solid var(--ink);border-radius:50%;background:var(--sheet);font-family:"Press Start 2P",var(--mono);font-size:9px;padding-left:1px}
 .wl-num.bonus{border-radius:5px}
-.wl-row.cleared .wl-num{background:var(--lime)}
+.wl-row.cleared .wl-num{background:#15171d;color:#ffffff;border-color:#15171d}
 .wl-txt strong{display:block;font-family:var(--display);font-size:15px;line-height:1.15}
 .wl-txt small{display:block;font-size:12.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wl-meta{color:var(--ink-3);font-size:12px}
@@ -424,7 +424,13 @@ html.world .world-hint{display:block}
 .wnode .wn-num{font-family:"Press Start 2P",var(--mono);font-size:10px;line-height:1;transform:translate(1px,1px)}
 .wstop.bonus .wnode{border-radius:6px;transform:rotate(45deg)}
 .wstop.bonus .wnode .wn-num{transform:rotate(-45deg) translate(1px,1px)}
-.wstop.cleared .wnode{background:#d5f53c}
+.wstop.cleared .wnode,.wstop.cleared:hover .wnode,.wstop.cleared:focus-within .wnode,.wstop.cleared.open .wnode,.wstop.cleared.hl .wnode{background:#15171d;color:#ffffff;border-color:#15171d;box-shadow:0 3px 0 #0f1115,0 0 0 2px #f6f3ea}
+.wflag{position:absolute;left:calc(50% + 6px);bottom:calc(50% + 2px);pointer-events:none;image-rendering:pixelated;filter:drop-shadow(1px 1px 0 rgba(0,0,0,.35))}
+.wstop.raise .wf-cloth{animation:flagUp 1.1s cubic-bezier(.2,.8,.2,1) both}
+.wstop.raise .wnode{animation:clearPop .6s .5s cubic-bezier(.2,.9,.3,1.5) both}
+@keyframes flagUp{from{transform:translateY(10px)}to{transform:none}}
+@keyframes clearPop{0%{transform:scale(1)}50%{transform:scale(1.35)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.wstop.raise .wf-cloth,.wstop.raise .wnode{animation:none}}
 .wstop.current .wnode::after{content:"";position:absolute;inset:-9px;border:2px dashed #d5f53c;border-radius:50%;animation:spin 6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .wstop:hover .wnode,.wstop:focus-within .wnode,.wstop.open .wnode{transform:scale(1.2);background:#d5f53c}
@@ -1054,6 +1060,7 @@ function openFile(i, from, clientIdx){
   setTimeout(()=>document.getElementById('fClose').focus({preventScroll:true}), 60);
 }
 function closeFile(){
+  if(curRole>-1 && VIEW==='world'){ const rr=C.roles[curRole]; const fresh = rr && !gWasEarned && isEarned(rr); setTimeout(()=>{ WFLAG = fresh ? rr.id : null; layoutWorld(); WFLAG=null; }, 420); }
   if(curRole>-1){ const r=C.roles[curRole]; if(r && !gWasEarned && isEarned(r)){ const all=caseFiles().every(o=>isEarned(o.r)); setTimeout(()=>{ renderFruits(r.id); if(all) setTimeout(()=>renderFruits('trophy'), 800); }, 380); } gWasEarned=false; }
   scrim.classList.remove('on'); file.classList.remove('on'); folderWrap.classList.remove('on'); photoWrap.classList.remove('on');
   document.documentElement.classList.remove('file-open','folder-open');
@@ -1238,13 +1245,12 @@ function caseFiles(){ // roles with post-its, in timeline order
 function fruitFor(roleIdx){ const list=caseFiles(); const k=list.findIndex(o=>o.i===roleIdx); return k<0?null:FRUIT_ORDER[k % FRUIT_ORDER.length]; }
 function foundCount(r){ return (FOUND[r.id]||[]).filter(j=>j < r.probes.length).length; }
 function ovDone(r){ return !!FOUND['ov:'+r.id]; }
-function markOverview(roleIdx){ const r=C.roles[roleIdx]; if(!r) return; FOUND['ov:'+r.id]=1; saveFound(); if(VIEW==='world') layoutWorld(); }
+function markOverview(roleIdx){ const r=C.roles[roleIdx]; if(!r) return; FOUND['ov:'+r.id]=1; saveFound(); }
 function isEarned(r){ if(!r.probes.length && !r.photo) return false; return foundCount(r)>=r.probes.length && ovDone(r); }
 function markFound(roleIdx, j){
   const r=C.roles[roleIdx]; if(!r) return;
   const had=isEarned(r);
   const set=new Set(FOUND[r.id]||[]); set.add(j); FOUND[r.id]=[...set]; saveFound();
-  if(VIEW==='world') layoutWorld();
   // the main fruit fills when the case file closes (see closeFile)
 }
 const fruitRow=document.getElementById('fruits');
@@ -1357,6 +1363,7 @@ function roleAvatar(r){
   return av;
 }
 let WV=null; // world view: scale + offset
+let WFLAG=null; // role id whose flag should animate up
 function worldFit(){
   const vw=viewport.clientWidth, vh=viewport.clientHeight;
   const sc=Math.max(3, Math.min(14, Math.floor(Math.min(vw/(MW+6), vh/(MH+6)))));
@@ -1407,11 +1414,11 @@ function layoutWorld(){
       const meta=document.createElement('div'); meta.className='wc-meta'; meta.append(T('span','wc-dates',P+'dates'));
       if(r.probes.length){ const f=T('span','wc-found'); f.textContent=`${foundCount(r)}/${r.probes.length} post-its`; meta.append(f); }
       else if(r.kind==='edu'){ meta.append(T('span','wc-found','ui.education')); }
-      if(isEarned(r)) wrap.classList.add('cleared');
       card.append(meta);
       if(r.probes.length || r.photo){ const ob=document.createElement('button'); ob.type='button'; ob.className='wc-open'; ob.append(T('span',null,'ui.openFile')); ob.insertAdjacentHTML('beforeend','<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'); ob.addEventListener('click',e=>{ e.stopPropagation(); openFile(ri, node); }); card.append(ob); }
       label=`Level ${st.n}: ${r.co}, ${r.role}, ${r.dates}`;
-      if(isEarned(r)) wrap.classList.add('cleared');
+      if(isEarned(r)){ wrap.classList.add('cleared'); if(WFLAG===r.id) wrap.classList.add('raise');
+        wrap.insertAdjacentHTML('afterbegin','<svg class="wflag" viewBox="0 0 12 20" width="36" height="60" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="2" width="2" height="18" fill="#15171d"/><rect x="0" y="0" width="4" height="3" fill="#f6f3ea"/><rect x="0" y="0" width="4" height="1" fill="#15171d"/><rect x="0" y="2" width="4" height="1" fill="#15171d"/><g class="wf-cloth"><rect x="3" y="3" width="8" height="1" fill="#15171d"/><rect x="3" y="4" width="7" height="1" fill="#f6f3ea"/><rect x="10" y="4" width="1" height="1" fill="#15171d"/><rect x="3" y="5" width="6" height="1" fill="#f6f3ea"/><rect x="9" y="5" width="1" height="1" fill="#15171d"/><rect x="3" y="6" width="5" height="1" fill="#f6f3ea"/><rect x="8" y="6" width="1" height="1" fill="#15171d"/><rect x="3" y="7" width="4" height="1" fill="#f6f3ea"/><rect x="7" y="7" width="1" height="1" fill="#15171d"/><rect x="3" y="8" width="3" height="1" fill="#f6f3ea"/><rect x="6" y="8" width="1" height="1" fill="#15171d"/><rect x="3" y="9" width="3" height="1" fill="#15171d"/></g><rect x="0" y="19" width="5" height="1" fill="#15171d"/></svg>'); }
       if(r.current) wrap.classList.add('current');
     } else {
       const m=C.miles[st.mile]; if(!m) return;
