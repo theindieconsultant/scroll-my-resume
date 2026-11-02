@@ -625,8 +625,9 @@ html.world .world-hint{display:block}
 .wmap canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
 .wstop{position:absolute;transform:translate(-50%,-50%);z-index:2}
 .wstop:hover,.wstop:focus-within,.wstop.open{z-index:10}
-.wmedia{position:absolute;right:calc(100% + 4px);top:50%;transform:translateY(-50%);display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#f6f3ea;color:#0f1115;border:2px solid #0f1115;box-shadow:0 2px 0 #0f1115;pointer-events:none}
-.wstop.bonus .wmedia{right:calc(100% + 8px)}
+.wmedia{position:absolute;z-index:1;right:calc(100% - 7px);top:50%;transform:translateY(-50%);transform-origin:100% 50%;transition:transform .25s cubic-bezier(.2,.8,.2,1.4);display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#d5f53c;color:#0f1115;border:2px solid #0f1115;box-shadow:0 2px 0 #0f1115;pointer-events:none}
+.wstop.bonus .wmedia{right:calc(100% - 3px)}
+.wstop:hover .wmedia,.wstop:focus-within .wmedia,.wstop.open .wmedia,.wstop.hl .wmedia{transform:translateY(-50%) scale(1.2)}
 .wnode{position:relative;display:grid;place-items:center;width:30px;height:30px;padding:0;border:3px solid #0f1115;border-radius:50%;cursor:pointer;
   background:#f6f3ea;color:#0f1115;box-shadow:0 3px 0 #0f1115;transition:transform .25s cubic-bezier(.2,.8,.2,1.4),background .2s}
 .wnode .wn-num{font-family:"Press Start 2P",var(--mono);font-size:10px;line-height:1;transform:translate(1px,1px)}
@@ -1837,7 +1838,7 @@ if(VIEW==='world'){
 }
 // ---------- Anonymous visit log (Google Sheet + daily email to Heatherlee) ----------
 // Paste the Apps Script web-app URL here. Empty = nothing is sent. Views inside Claude are never counted.
-const LOG_URL = '';
+const LOG_URL = 'https://script.google.com/macros/s/AKfycbyhuAl4qYbIVzByAu7UuVrQoDeMHiBLjR0PPIbCAhCiz5rmsd6fHaNa0e4C_6Hv4tf7/exec';
 function hlVid(){ try{ let v=localStorage.getItem('hl-vid'); if(!v){ v='v-'+Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4); localStorage.setItem('hl-vid',v); } return v; }catch(_){ return 'unknown'; } }
 function hlLog(event, extra){
   if(!LOG_URL || (window.claude && typeof window.claude.use==='function')) return;
