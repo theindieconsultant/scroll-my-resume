@@ -440,6 +440,71 @@ html.world .stage > .wrap{width:auto;max-width:none;margin:0}
 html.world .stage-head{grid-column:1;grid-row:1;min-height:0;overflow:auto;padding-bottom:12px;background:var(--paper);border-right:2px solid var(--ink)}
 html.world .stage-head h2{font-size:clamp(18px,1.6vw,22px)}
 .wh-row{display:flex;align-items:flex-start;gap:12px;width:100%}
+/* world top bar: logo, Timeline view, avatar, replay (aligned to the sidebar's right edge) */
+html.world .topbar .wrap{width:min(380px,100%);margin:0;gap:12px}
+html.world .topbar .replay{pointer-events:auto;margin:0 0 0 auto}
+.av-btn{pointer-events:auto;position:relative;flex:none;display:grid;place-items:center;width:44px;height:44px;padding:0;border-radius:50%;border:2px solid var(--ink);background:var(--sheet);color:var(--ink);cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .2s,box-shadow .2s}
+.av-btn:hover,.av-btn:focus-visible{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+.av-btn .av-face{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;overflow:hidden}
+.av-btn.picked .av-face{background:#e4e1da}
+.av-btn.picked .av-face svg{margin-top:4px}
+.av-btn .atip{position:absolute;left:50%;top:calc(100% + 10px);transform:translate(-50%,-4px);white-space:nowrap;font-family:var(--mono);font-size:12px;background:var(--ink);color:var(--paper);padding:6px 10px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30}
+.av-btn:hover .atip,.av-btn:focus-visible .atip{opacity:1;transform:translate(-50%,0)}
+.av-btn.pop{animation:fruitPop .7s cubic-bezier(.2,.9,.3,1.5)}
+.av-wrap{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:calc(16px + var(--banner-h,0px)) 16px 16px;background:rgba(15,17,21,.72);opacity:0;transition:opacity .25s}
+.av-wrap[hidden]{display:none}
+.av-wrap.on{opacity:1}
+.av-card{position:relative;width:min(760px,100%);max-height:calc(100svh - var(--banner-h,0px) - 32px);overflow:auto;box-sizing:border-box;padding:30px 32px 20px;display:grid;gap:14px;background:#15171d;color:#eceae4;border:3px solid #3a3d45;border-radius:18px;box-shadow:8px 8px 0 #0f1115;transform:translateY(18px) scale(.97);transition:transform .45s cubic-bezier(.2,.9,.2,1.1)}
+.av-wrap.on .av-card{transform:none}
+:where(.av-card) button{font:inherit;cursor:pointer}
+.av-card button:focus-visible{outline:3px solid #d5f53c;outline-offset:3px;box-shadow:none}
+.av-x{position:absolute;top:14px;right:14px;z-index:2;width:44px;height:44px;display:grid;place-items:center;background:transparent;border:2px solid #474b57;border-radius:10px;color:#ffffff}
+.av-x:hover{border-color:#d5f53c}
+.av-body{display:grid;gap:16px}
+.av-h{margin:0;padding:0 50px;text-align:center;font-family:"Press Start 2P",var(--mono);font-weight:400;font-size:clamp(16px,2.6vw,24px);line-height:1.3;color:#d5f53c}
+.av-sub{margin:-4px 0 0;text-align:center;color:#b9b6ae;font-size:15px}
+.av-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;justify-self:center;width:min(560px,100%)}
+.av-tile{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 6px 10px;background:#1d2026;border:3px solid #3a3d45;border-radius:12px;box-shadow:0 4px 0 #0f1115;color:#ffffff;transition:transform .18s cubic-bezier(.2,.8,.2,1.4),border-color .2s}
+.av-tile:hover{transform:translateY(-4px);border-color:#d5f53c}
+.av-tile.current{border-color:#d5f53c}
+.av-pbox{position:relative;display:grid;place-items:center;width:88px;height:88px;background:#e4e1da;border-radius:6px}
+.av-badge{position:absolute;right:-10px;bottom:-8px;display:grid;place-items:center;width:30px;height:30px;background:#15171d;border:2px solid #d5f53c;border-radius:7px}
+.av-badge.big{width:54px;height:54px;right:-14px;bottom:-14px;border-radius:10px}
+.av-name{font-family:var(--mono);font-size:13px;font-weight:500;white-space:nowrap}
+.av-skip{justify-self:center;min-height:44px;padding:0 10px;background:transparent;border:0;color:#d9d6cf;font-family:var(--mono);font-size:14px;text-decoration:underline;text-underline-offset:4px}
+.av-skip:hover{color:#ffffff}
+.av-back{justify-self:start;min-height:36px;padding:0 6px;margin:-8px 0 -4px -6px;background:transparent;border:0;color:#b9b6ae;font-family:var(--mono);font-size:13px}
+.av-back:hover{color:#ffffff}
+.av-top{display:flex;gap:28px;align-items:flex-start;padding-right:40px}
+.av-big{position:relative;flex:none;display:grid;place-items:center;width:200px;height:200px;border-radius:10px;background-color:#e4e1da;background-image:linear-gradient(#d8d4cb 1px,transparent 1px),linear-gradient(90deg,#d8d4cb 1px,transparent 1px);background-size:13px 13px;box-shadow:0 0 0 3px var(--c)}
+.av-info{display:grid;gap:10px;min-width:0}
+.av-n{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(24px,3.4vw,32px);line-height:1.05;letter-spacing:-.015em;color:#ffffff}
+.av-cls{justify-self:start;color:#15171d;font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.04em;padding:4px 10px;border-radius:4px}
+.av-d{margin:0;font-size:16px;line-height:1.5;color:#d9d6cf}
+.av-aka{margin:0;font-family:var(--mono);font-size:12px;color:#b9b6ae}
+.av-mid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:stretch}
+.av-stats{display:grid;gap:9px;align-content:center}
+.av-stat{display:flex;align-items:center;gap:10px}
+.av-stat .l{width:92px;font-family:var(--mono);font-size:12px;font-weight:500;color:#b9b6ae}
+.av-stat .segs{display:flex;gap:3px}
+.av-stat .segs span{width:14px;height:11px;border-radius:2px;background:#2b2e36;box-shadow:inset 0 0 0 1px #3a3d45}
+.av-stat .segs span.on{background:#d5f53c;box-shadow:inset 0 0 0 1px #15171d}
+.av-stat .v{font-family:"Press Start 2P",var(--mono);font-size:10px;color:#ffffff}
+.av-move{border:2px dashed #3a3d45;border-radius:10px;padding:12px 14px;display:grid;gap:5px}
+.av-move .h{display:flex;justify-content:space-between;gap:12px;font-family:"Press Start 2P",var(--mono);font-size:9px;line-height:1.6;color:#b9b6ae}
+.av-move .h span:first-child{color:#d5f53c}
+.av-move b{font-family:var(--display);font-size:18px;color:#ffffff}
+.av-move p{margin:0;font-size:14px;line-height:1.45;color:#d9d6cf}
+.av-coop{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.av-coop .h{font-family:"Press Start 2P",var(--mono);font-size:9px;color:#b9b6ae;margin-right:4px}
+.av-chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px 0 6px;background:transparent;border:1.5px solid;border-radius:999px;font-family:var(--mono)!important;font-size:12px;font-weight:500;color:#ffffff}
+.av-chip:hover{background:#2b2e36}
+.av-chip .m{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#e4e1da;overflow:hidden}
+.av-go{height:58px;background:#d5f53c;color:#15171d;border:0;border-radius:10px;font-family:"Press Start 2P",var(--mono)!important;font-size:14px;letter-spacing:.04em;box-shadow:0 4px 0 #7f9420}
+.av-go:hover{transform:translateY(2px);box-shadow:0 2px 0 #7f9420}
+@media (max-width:640px){.av-card{padding:24px 16px 14px}.av-grid{gap:10px}.av-pbox{width:72px;height:72px}.av-pbox svg{width:56px;height:56px}.av-top{flex-direction:column;padding-right:0}.av-big{width:160px;height:160px}.av-big > svg{width:132px;height:132px}.av-mid{grid-template-columns:1fr}.av-name{font-size:11px;white-space:normal;text-align:center}}
+@media (prefers-reduced-motion:reduce){.av-card{transition:none}.av-btn.pop{animation:none}}
+
 .wh-row h2{flex:1;min-width:0}
 .replay{position:relative;flex:none;display:grid;place-items:center;width:44px;height:44px;margin-top:-6px;border:0;border-radius:8px;background:transparent;color:var(--ink-3);opacity:.75;cursor:pointer;transition:color .2s,opacity .2s}
 .replay:hover,.replay:focus-visible{color:var(--ink-2);opacity:1}
@@ -591,11 +656,11 @@ html.world .world-hint{display:block}
 }
 </style>
 
-<div class="game-banner" role="banner"><div class="gb-main"><p data-k="head.banner">Welcome to Heatherlee’s interactive timeline game. Learn more, find fruit, have fun!</p></div><div class="gb-wip"><p data-k="head.wip">----- 🚧 --- WORK IN PROGRESS --- 🚧 -----</p></div></div>
+<div class="game-banner" role="banner"><div class="gb-main"><p data-k="head.banner">Welcome to Heatherlee’s interactive timeline game.</p></div><div class="gb-wip"><p data-k="head.wip">----- 🚧 --- WORK IN PROGRESS --- 🚧 -----</p></div></div>
 <header class="topbar">
   <div class="wrap">
     <a class="mark" href="#top" aria-label="HLUX, back to top"><svg xmlns="http://www.w3.org/2000/svg" viewBox="75 35 1025 1061" width="44" height="46" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M1028.0,1091.5C1010.1,1089.3 977.8,1083.8 973.7,1082.4C971.5,1081.6 965.9,1081.0 961.1,1081.0C945.3,1081.0 936.0,1077.1 924.9,1066.1C918.5,1059.7 916.5,1056.8 912.2,1048.0C909.4,1042.2 905.3,1032.1 903.0,1025.6C900.8,1019.0 896.4,1008.9 893.3,1003.1C879.3,976.8 873.0,963.6 870.5,955.6L867.8,947.0L856.0,968.4C849.5,980.2 841.0,996.1 837.1,1003.7C833.2,1011.3 827.1,1021.4 823.6,1026.1C814.8,1037.8 795.6,1056.1 788.5,1059.5C782.3,1062.6 779.6,1062.6 763.5,1059.6C752.6,1057.6 737.4,1056.3 706.0,1054.5C664.1,1052.1 655.9,1050.5 647.9,1043.3C643.1,1039.0 641.7,1034.6 642.2,1026.0C642.5,1020.0 643.3,1017.6 648.7,1006.8C657.0,990.3 680.8,947.4 705.8,903.5C737.2,848.7 764.5,792.9 765.7,781.3C766.6,773.4 764.8,768.4 753.6,747.1C722.9,688.9 654.3,555.1 652.4,549.9C651.6,547.5 650.9,542.4 650.8,538.7C650.8,529.9 654.7,521.4 661.9,514.7C668.9,508.1 675.7,506.3 686.5,507.9C706.7,510.9 724.2,513.0 744.0,514.9C775.5,517.9 781.0,519.8 791.0,530.7L796.3,536.5L808.9,536.5C820.9,536.5 821.7,536.6 826.2,539.3C836.1,545.1 838.1,552.0 844.0,600.0C846.3,618.0 850.3,626.1 857.8,627.6C860.0,628.1 861.8,627.7 863.7,626.4C867.7,623.9 868.4,622.9 875.0,609.2C878.3,602.5 884.1,592.6 887.8,587.2C899.6,570.6 904.5,561.2 909.1,546.2C911.5,538.5 915.8,533.4 921.1,532.0C925.2,530.9 926.2,531.0 942.0,534.0C947.2,535.0 960.3,536.8 971.0,538.0C981.7,539.1 995.4,541.0 1001.3,542.1C1022.0,545.9 1039.2,553.7 1050.8,564.5C1061.0,573.9 1063.1,582.8 1058.4,596.5C1052.0,615.4 1028.0,667.2 1000.1,722.5C984.7,752.9 976.8,769.7 975.7,774.2C973.6,782.6 973.5,795.4 975.6,803.4C976.4,806.7 987.0,830.2 999.0,855.5C1025.6,911.6 1029.7,920.5 1061.0,988.0C1074.9,1018.0 1088.2,1045.4 1091.4,1050.4C1096.1,1057.9 1097.0,1060.0 1097.0,1063.9C1097.0,1068.4 1096.7,1068.8 1088.6,1076.6C1082.5,1082.6 1078.1,1085.8 1072.4,1088.6C1064.7,1092.5 1064.5,1092.5 1051.6,1092.7C1044.4,1092.8 1033.8,1092.3 1028.0,1091.5ZM538.0,845.9C520.7,845.5 483.3,844.7 455.0,844.0C401.8,842.9 364.6,841.7 256.0,837.5C221.1,836.2 172.7,834.6 148.5,834.0C97.7,832.7 92.3,832.1 87.4,827.8C82.1,823.2 80.9,819.1 80.1,804.5C78.7,779.8 80.5,753.3 87.5,698.5C89.4,683.6 91.4,666.3 92.0,660.0C92.6,653.7 94.2,643.3 95.5,637.0C99.3,618.6 101.8,599.6 104.5,567.5C108.1,524.7 108.9,518.0 111.0,513.3C114.4,505.5 119.1,504.0 141.0,503.9C152.3,503.9 163.2,504.7 181.5,506.9C195.2,508.5 212.3,510.1 219.3,510.4C229.4,510.8 233.0,511.3 236.3,512.9C238.7,514.1 245.6,520.1 252.3,527.0C258.9,533.6 264.6,539.0 265.0,539.0C265.5,539.0 267.2,540.2 268.9,541.6C272.7,544.7 272.8,547.4 270.1,561.0C268.8,567.3 267.7,578.7 267.0,594.5C265.5,627.7 263.0,644.2 256.6,662.9C251.9,676.5 253.8,681.2 264.9,683.4C266.8,683.7 297.6,684.9 333.4,686.0C441.2,689.3 497.3,691.6 541.0,694.6C553.4,695.5 575.9,696.5 591.0,696.8C629.5,697.8 628.4,697.0 629.5,727.0C629.8,737.2 630.8,758.3 631.6,774.0C632.4,789.7 633.1,809.9 633.3,819.0C633.5,838.3 632.7,840.8 625.0,844.8C620.7,846.9 619.7,847.0 595.0,846.8C581.0,846.8 555.3,846.3 538.0,845.9ZM619.8,482.4C615.5,480.1 614.6,477.4 614.3,465.3C614.2,459.2 612.7,445.4 611.1,434.8C606.0,401.5 606.1,389.8 611.6,373.0C615.4,361.6 619.9,355.4 626.8,352.2L632.5,349.6L695.0,349.4C754.8,349.2 797.2,348.2 838.5,346.0C876.4,343.9 903.6,341.9 910.5,340.5C928.4,336.7 936.0,328.3 936.0,312.0C936.0,300.4 932.3,293.7 923.7,289.6C913.2,284.8 891.7,282.4 867.0,283.4C813.2,285.6 799.8,285.9 764.2,285.9C721.8,286.0 699.8,287.0 674.0,290.0C656.9,292.0 653.6,292.0 632.6,288.9C627.9,288.2 620.7,288.0 615.0,288.4C600.8,289.3 600.0,288.5 595.2,267.0C589.5,241.8 589.1,234.2 591.8,197.0C592.8,184.1 594.6,179.2 600.2,174.5C607.3,168.5 616.7,166.0 641.5,163.6C686.3,159.2 736.5,157.7 824.5,158.2C887.0,158.6 892.4,158.8 904.8,160.8C948.9,167.9 985.8,182.4 1024.5,207.8C1051.3,225.4 1063.4,242.3 1071.0,272.2C1078.0,300.3 1080.5,336.8 1076.7,357.5C1069.8,395.4 1045.6,427.8 1011.5,444.8C978.8,461.0 936.7,467.5 837.0,471.5C781.8,473.7 732.8,476.9 728.0,478.6C727.2,478.9 707.6,479.6 684.5,480.0C653.2,480.7 640.6,481.3 635.0,482.4C625.8,484.3 623.3,484.3 619.8,482.4ZM193.0,452.9C188.3,452.4 172.0,452.1 156.8,452.3C130.1,452.5 129.1,452.4 126.3,450.4C121.6,446.8 120.0,442.9 118.5,430.5C113.4,389.9 114.7,344.2 122.5,279.0C127.7,236.1 128.9,216.2 130.0,160.5L130.9,116.5L134.6,100.0C138.1,84.6 138.3,82.3 138.4,66.5C138.5,57.1 138.9,48.9 139.3,48.2C139.8,47.5 141.4,46.4 142.8,45.9C146.4,44.5 195.2,41.9 222.0,41.7C243.2,41.5 243.6,41.5 248.0,44.0C254.7,47.7 257.3,53.3 256.6,62.5C256.3,66.3 255.4,71.8 254.5,74.6C253.3,78.7 253.0,87.5 252.8,120.8C252.5,159.1 252.6,162.0 254.3,163.7C255.9,165.3 258.5,165.5 282.3,165.6C304.0,165.7 310.8,166.1 322.0,167.8C338.1,170.4 343.1,170.5 347.5,168.4C353.0,165.8 354.4,161.5 353.4,150.1C352.1,136.4 352.5,119.9 354.5,101.5C355.9,89.2 356.1,81.3 355.6,67.3L355.0,49.1L357.5,46.2C361.0,42.0 369.7,39.8 385.1,39.2C413.3,38.2 438.4,46.3 473.0,67.6C487.9,76.8 488.9,77.6 490.7,81.8C493.6,88.7 496.9,138.9 500.0,224.0C501.9,275.0 502.8,293.3 506.5,358.0C508.4,389.1 508.6,421.6 507.0,428.7C503.7,443.9 494.5,447.0 462.9,443.5C446.3,441.7 443.4,441.7 383.9,443.6C365.5,444.2 364.1,444.1 359.7,442.2C355.9,440.5 354.5,439.2 353.0,435.8C351.2,431.8 351.1,429.9 351.6,408.0C352.0,391.3 351.8,377.3 350.6,359.8C349.7,346.2 349.0,331.5 349.0,327.1C349.0,313.9 346.1,309.2 336.9,307.5C335.0,307.2 321.5,307.8 307.0,309.0C281.4,311.1 261.4,311.3 249.3,309.4C245.7,308.8 244.8,309.1 242.5,311.4C240.3,313.6 239.9,314.7 240.4,317.3C240.7,319.1 241.2,333.6 241.6,349.5C242.3,382.3 241.3,400.8 237.4,422.0C232.9,447.1 227.9,453.0 210.2,453.5C205.4,453.7 197.7,453.4 193.0,452.9Z"></path></svg></a>
-    <a class="world-btn" id="worldBtn" href="./" target="_blank" rel="noopener"><span>Timeline view</span><svg width="14" height="14" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span class="wtip">Back to the scrolling timeline</span></a>
+    <a class="world-btn" id="worldBtn" href="timeline.html" target="_blank" rel="noopener"><span>Timeline view</span><svg width="14" height="14" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span class="wtip">Back to the scrolling timeline</span></a>
   </div>
 </header>
 
@@ -713,14 +778,14 @@ html.world .world-hint{display:block}
 <script>window.HL_VIEW="world";</script>
 <script>
 (function(){
-const VIEW = window.HL_VIEW || (location.hash==='#world' ? 'world' : 'timeline');
-// Inside Claude the map opens as a view of this same page (#world), so edit mode and saving work there too.
-if(!window.HL_VIEW){
-  const wb=document.getElementById('worldBtn');
-  if(VIEW==='world'){
-    const h=document.querySelector('.stage-head h2'), sp=document.querySelector('.stage-head p'); if(h) h.dataset.k='head.worldTitle'; if(sp) sp.dataset.k='head.worldSub';
-    if(wb){ wb.href='./'; wb.querySelector('span').textContent='Timeline view'; wb.querySelector('.wtip').textContent='Back to the scrolling timeline'; }
-  }
+// The map (world) view is the default; the timeline is #timeline here, or timeline.html on the public site.
+const VIEW = window.HL_VIEW || (location.hash==='#timeline' ? 'timeline' : 'world');
+const wb=document.getElementById('worldBtn');
+if(!window.HL_VIEW && VIEW==='world'){
+  const h=document.querySelector('.stage-head h2'), sp=document.querySelector('.stage-head p'); if(h) h.dataset.k='head.worldTitle'; if(sp) sp.dataset.k='head.worldSub';
+  if(wb){ wb.href='timeline.html'; wb.querySelector('span').textContent='Timeline view'; wb.querySelector('.wtip').textContent='Back to the scrolling timeline'; }
+}
+{
   if(wb && VIEW!=='world' && !wb.classList.contains('card')){
     const sp=wb.querySelector('span'), arrow=wb.querySelector('svg'), row=document.createElement('div'); row.className='wb-row'; row.append(sp, arrow);
     const fr=document.createElement('div'); fr.className='wb-frame'; fr.setAttribute('aria-hidden','true');
@@ -729,9 +794,9 @@ if(!window.HL_VIEW){
   }
   if(wb) wb.addEventListener('click',e=>{
     if(!(window.claude && typeof window.claude.use==='function')) return; // plain site: follow the link (new tab)
-    e.preventDefault(); location.hash = VIEW==='world' ? '' : 'world';
+    e.preventDefault(); location.hash = VIEW==='world' ? 'timeline' : '';
   });
-  window.addEventListener('hashchange',()=>{ const want=location.hash==='#world'?'world':'timeline'; if(want!==VIEW) location.reload(); });
+  if(!window.HL_VIEW) window.addEventListener('hashchange',()=>{ const want=location.hash==='#timeline'?'timeline':'world'; if(want!==VIEW) location.reload(); });
 }
 if(VIEW==='world') document.documentElement.classList.add('world');
 const NOW = 2026 + 9.97/12;
@@ -743,7 +808,7 @@ const STORIES = [{"id": "vb", "story": true, "lane": 0, "s": 2025.5, "e": 2025.6
 // ---------- Default content (content.json, when published, takes precedence) ----------
 const DEFAULT = {
  v:1,
- head:{worldTitle:"Welcome to my world! Pick a level, peek at the role, then open its case file.", worldSub:"Clear every post-it in a level to light it up and earn its fruit.", banner:"Welcome to Heatherlee’s interactive timeline game. Learn more, find fruit, have fun!", wip:"----- 🚧 --- WORK IN PROGRESS --- 🚧 -----", title:"Scroll, drag or use the arrow keys to move through the years. Open any bar to dig in.", sub:"Each role is a case file. The details are there for whoever goes looking."},
+ head:{worldTitle:"Welcome to my world! Pick a level, peek at the role, then open its case file.", worldSub:"Clear every post-it in a level to light it up and earn its fruit.", banner:"Welcome to Heatherlee’s interactive timeline game.", wip:"----- 🚧 --- WORK IN PROGRESS --- 🚧 -----", title:"Scroll, drag or use the arrow keys to move through the years. Open any bar to dig in.", sub:"Each role is a case file. The details are there for whoever goes looking."},
  ui:{photoLabel:"Then & now", education:"Education", legendEdu:"Education", postit:"Post-it", overview:"Overview", foundPosts:"found post-its", tabsHint:"Open the tabs to learn more", hint:"Drag to pan, or use", legendRole:"Role", legendClient:"Client engagement", legendMilestone:"Milestone",
      openFile:"Open file", watch:"Watch video", headline:"The headline result", hold:"Press and hold to reveal",
      ask:"Ask about it", pick:"Pick a client", done:"You found everything in this file. Ask me about it in person.", uncovered:"uncovered"},
@@ -1692,7 +1757,7 @@ if(VIEW==='world'){
   const row=document.createElement('div'); row.className='wh-row'; h2.before(row); row.append(h2);
   const rb=document.createElement('button'); rb.type='button'; rb.className='replay'; rb.setAttribute('aria-label','Replay: clicking this will refresh the map and clear your fruit and flags');
   rb.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v6h6"/></svg><span class="rtip">REPLAY: Clicking this will refresh the map</span>';
-  row.append(rb);
+  const tw=document.querySelector('.topbar .wrap'); tw.append(rb);
   const card=document.createElement('section'); card.className='scorecard'; card.setAttribute('aria-label','Scorecard');
   card.innerHTML='<div class="sc-top"><span class="sc-label">My Score</span><span class="sc-val"><b id="scoreVal">00000</b> <span id="scoreMax"></span></span></div>';
   row.after(card); card.append(fruitRow); if(sub) card.append(sub);
@@ -1703,6 +1768,123 @@ if(VIEW==='world'){
     renderFruits(); layoutWorld();
   });
 }
+// ---------- Avatar picker (world view): "Select your designer", opens on load until the visitor picks or skips ----------
+const AVKEY='hl-avatar', AVSKIP='hl-avatar-skip';
+const AV=(()=>{
+  const SKIN={a:'#f1c9a5',b:'#d9a066',c:'#a8693d',d:'#6b3f22',e:'#e8b48a'};
+  const CC={cur:'#f39221',craft:'#b48cf0',tech:'#7cc4ef',lead:'#6cc070'};
+  const CLS={cur:'CURIOSITY & EMPATHY',craft:'CRAFT & CLARITY',tech:'TECHNOLOGY & EXPERTISE',lead:'LEADERSHIP & LONGEVITY'};
+  const HAIR={
+    short:['................','....HHHHHHHH....','...HHHHHHHHHH...','...HHHHHHHHHH...','...HSSSSSSSSH...','...SSSSSSSSSS...','...SSKSSSSKSS...','...SSSSSSSSSS...','....SSSKKSSS....','.....SSSSSS.....'],
+    long:['................','....HHHHHHHH....','...HHHHHHHHHH...','..HHHHHHHHHHHH..','..HHSSSSSSSSHH..','..HSSSSSSSSSSH..','..HSSKSSSSKSSH..','..HSSSSSSSSSSH..','..HHSSSKKSSSHH..','..HH.SSSSSS.HH..'],
+    bun:['......HHHH......','.....HHHHHH.....','....HHHHHHHH....','...HHHHHHHHHH...','...HSSSSSSSSH...','...SSSSSSSSSS...','...SSKSSSSKSS...','...SSSSSSSSSS...','....SSSKKSSS....','.....SSSSSS.....'],
+    afro:['...HHHHHHHHHH...','..HHHHHHHHHHHH..','.HHHHHHHHHHHHHH.','.HHHHHHHHHHHHHH.','.HHHSSSSSSSSHHH.','.HHSSSSSSSSSSHH.','..HSSKSSSSKSSH..','..HSSSSSSSSSSH..','....SSSKKSSS....','.....SSSSSS.....'],
+    swoop:['.....HHHHH......','...HHHHHHHHH....','..HHHHHHHHHHH...','..HHHHHHHHHHH...','...HHHHSSSSSH...','...HHSSSSSSSS...','...SSKSSSSKSS...','...SSSSSSSSSS...','....SSSKKSSS....','.....SSSSSS.....'],
+    beanie:['.......AA.......','....AAAAAAAA....','...AAAAAAAAAA...','...AAAAAAAAAA...','...HSSSSSSSSH...','...SSSSSSSSSS...','..KLLLLLLLLLLK..','...SSSSSSSSSS...','....SSSKKSSS....','.....SSSSSS.....'],
+    beard:['................','....HHHHHHHH....','...HHHHHHHHHH...','...HHHHHHHHHH...','...HSSSSSSSSH...','...SSSSSSSSSS...','...SSKSSSSKSS...','...HSSSSSSSSH...','....HHSKKSHH....','.....HHHHHH.....']
+  };
+  const BODY=['......SSSS......','....CCCLLCCC....','...CCCCLLCCCC...','..CCCCCCCCCCCC..','..CCCCCCCCCCCC..','..CCCCCCCCCCCC..'];
+  const ITEMS={
+    lens:['.KKKK...','KWLLLK..','KLLLLK..','KLLLLK..','.KKKK...','.....NN.','......NN','........'],
+    bubble:['.KKKKKK.','KWWWWWWK','KWBWBWBK','KWWWWWWK','.KKKKKK.','..KK....','.K......','........'],
+    horn:['.....KK.','...KKRK.','KKKRRRK.','KWKRRRK.','KKKRRRK.','...KKRK.','.....KK.','........'],
+    brush:['......KK','.....KPK','....KPK.','...KTK..','..KTK...','.KKK....','KPPK....','KPK.....'],
+    laptop:['........','.KKKKKK.','.KLKLLK.','.KLLKLK.','.KKKKKK.','KWWWWWWK','KKKKKKKK','........'],
+    pencil:['......KK','.....KRK','....KYK.','...KYK..','..KYK...','.KTK....','KKK.....','........'],
+    bolt:['....KKK.','...KYYK.','..KYYK..','.KYYYYK.','..KYYK..','.KYYK...','.KYK....','.KK.....'],
+    book:['.KKKKKK.','KBBBBBWK','KBLLBBWK','KBBBBBWK','KBBBBBWK','KBBBBBWK','.KKKKKK.','........'],
+    crown:['........','K..KK..K','KYKYYKYK','KYYYYYYK','KYRYYBYK','KYYYYYYK','KKKKKKKK','........']
+  };
+  const ACC='#d5f53c';
+  const IPAL={K:'#15171d',W:'#ffffff',L:ACC,Y:'#f7d531',B:'#3a7fb5',R:'#e8312f',P:'#9b5de5',T:'#c99a6b',N:'#8a4b1f'};
+  const LIST=[
+    {id:'lover',short:'People-Lover',name:'The Curious People-Lover',cls:'cur',hair:'long',H:'#5b3a1e',skin:'e',item:'lens',itemName:'Research Lens',stats:[9,5,4,5],desc:'Always asks about the research and can’t wait to meet real users.',aka:'UX Researcher · Service Designer',move:'Quick Study',moveDesc:'Spins up a fast round of interviews and turns what users say into stories the whole team remembers.',coop:['tester','dev']},
+    {id:'tester',short:'Ideas Tester',name:'The Diplomatic Ideas Tester',cls:'cur',hair:'afro',H:'#1c1c1c',skin:'d',item:'bubble',itemName:'Why? Bubble',stats:[8,5,5,7],glasses:true,desc:'Asks “why?”, “are we sure?” and “did we test this?” until every user type is served.',aka:'UX Analyst · Usability Engineer',move:'Did We Test This?',moveDesc:'Stops untested assumptions in their tracks and finds scrappy ways to keep users in the loop.',coop:['challenger','dev']},
+    {id:'challenger',short:'Challenger',name:'The Challenger / Advocate',cls:'cur',hair:'swoop',H:'#9b5de5',skin:'c',item:'horn',itemName:'Megaphone',stats:[9,5,4,7],desc:'Fearlessly says what nobody else in the room will, for the people being designed for.',aka:'Inclusive Designer · Impact Designer',move:'Speak Up',moveDesc:'Makes sure every user has a voice, from accessibility to fair representation and inclusion.',coop:['tester','dev']},
+    {id:'artist',short:'Pixel Artist',name:'The Pixel-Perfect Artist',cls:'craft',hair:'afro',H:'#b5452a',skin:'a',item:'brush',itemName:'Pixel Brush',stats:[5,10,6,5],desc:'Turns black-and-white wireframes into polished, on-brand mockups.',aka:'UI Designer · Visual Designer',move:'Polish Pass',moveDesc:'Sweeps color, type, spacing and layout until every screen matches the design system.',coop:['writer','dev']},
+    {id:'dev',short:'Dev Wannabe',name:'The Prototypin’ Dev Wannabe',cls:'craft',hair:'short',H:'#1c1c1c',skin:'b',item:'laptop',itemName:'Prototype Rig',stats:[6,8,9,4],glasses:true,desc:'Prototypes like a developer and thinks about the code behind every motion.',aka:'Motion Designer · UX/Front-End Dev',move:'Hi-Fi Prototype',moveDesc:'Simulates real animation and interaction so the team can feel it before anything ships.',coop:['tester','expert']},
+    {id:'writer',short:'Word-Lover',name:'The Word-Lovin’ Content Strategist',cls:'craft',hair:'long',H:'#e2c25b',skin:'b',item:'pencil',itemName:'Copy Pencil',stats:[7,9,4,5],glasses:true,desc:'Replaces lorem ipsum with real copy and pairs words with visuals that sell.',aka:'UX Writer · Content Strategist',move:'Lorem Be Gone',moveDesc:'Writes the words users want to read, plus the icons, media and slides to go with them.',coop:['artist','lover']},
+    {id:'guru',short:'Tech Guru',name:'The Tech Guru Experimenter',cls:'tech',hair:'beanie',H:'#1c1c1c',skin:'c',item:'bolt',itemName:'Beta Bolt',stats:[7,5,10,5],A:'#3a7fb5',desc:'First to try the newest AI tool or plugin, and first to share the tip.',aka:'UX Engineer · UI Developer',move:'Early Adopter',moveDesc:'Brings in new tech to work smarter, then trains the team and clients to use it.',coop:['dev','tester']},
+    {id:'expert',short:'Domain Expert',name:'The Skilled Domain Expert',cls:'tech',hair:'beard',H:'#5b3a1e',skin:'d',item:'book',itemName:'Product Codex',stats:[6,5,8,6],glasses:true,desc:'A walking encyclopedia of your users, your product and its usability issues.',aka:'Subject Matter Expert · Product Lead',move:'Encyclopedia',moveDesc:'Goes deep into the data and pairs with teammates who are newer to the product.',coop:['dev','guru']},
+    {id:'mentor',short:'Leader / Mentor',name:'The Proven Leader / Mentor',cls:'lead',hair:'bun',H:'#b9b6ae',skin:'a',item:'crown',itemName:'Mentor Crown',stats:[6,6,5,10],glasses:true,desc:'Years of leadership, here for the long haul, and inspiring the whole team.',aka:'UX Director · Principal Product Designer',move:'Rally the Squad',moveDesc:'Leads big initiatives end to end and levels up every designer along the way.',coop:['tester','expert']}
+  ];
+  const BY={}; LIST.forEach(p=>BY[p.id]=p);
+  function rowsFor(p){ const rows=HAIR[p.hair].slice(); if(p.glasses) rows[6]=rows[6].replace('SKSSSSKS','KWKKKKWK'); const body=BODY.slice(); if(p.hair==='long'){ body[0]='..HH..SSSS..HH..'; body[1]='..HHCCCLLCCCHH..'; } return rows.concat(body); }
+  function svgRows(rows, map, w, h, px, label){
+    let r=''; rows.forEach((row,y)=>{ let x=0; while(x<row.length){ const c=map[row[x]]; if(!c){x++;continue;} let n=1; while(row[x+n]===row[x]) n++; r+=`<rect x="${x}" y="${y}" width="${n}" height="1" fill="${c}"/>`; x+=n; } });
+    return `<svg viewBox="0 0 ${w} ${h}" width="${px}" height="${px*h/w}" shape-rendering="crispEdges" ${label?`role="img" aria-label="${label}"`:'aria-hidden="true"'}>${r}</svg>`;
+  }
+  const portrait=(p,px,label)=>svgRows(rowsFor(p), {K:'#15171d',W:'#ffffff',L:ACC,S:SKIN[p.skin],H:p.H,C:CC[p.cls],A:p.A||'#3a7fb5'}, 16, 16, px, label);
+  const item=(p,px)=>svgRows(ITEMS[p.item], IPAL, 8, 8, px);
+  return {LIST, BY, CC, CLS, portrait, item};
+})();
+function avGet(){ try{ const id=localStorage.getItem(AVKEY); return AV.BY[id]?id:null; }catch(_){ return null; } }
+function avSet(id){ try{ localStorage.setItem(AVKEY,id); }catch(_){} }
+function avBtnRender(){
+  const b=document.getElementById('avBtn'); if(!b) return; const id=avGet();
+  const face=b.querySelector('.av-face'), tip=b.querySelector('.atip');
+  if(id){ face.innerHTML=AV.portrait(AV.BY[id],34); b.classList.add('picked'); tip.textContent='Change my avatar'; b.setAttribute('aria-label','Change my avatar ('+AV.BY[id].short+')'); }
+  else { face.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>'; b.classList.remove('picked'); tip.textContent='Select an avatar'; b.setAttribute('aria-label','Select an avatar'); }
+}
+let avLast=null;
+function avOpen(){
+  let w=document.getElementById('avWrap');
+  if(!w){
+    w=document.createElement('div'); w.id='avWrap'; w.className='av-wrap'; w.hidden=true;
+    w.innerHTML='<div class="av-card" role="dialog" aria-modal="true" aria-labelledby="avTitle"><button class="av-x" type="button" aria-label="Close"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M3 3l10 10M13 3L3 13"/></svg></button><div class="av-body"></div><button class="av-skip" type="button">Skip for now</button></div>';
+    document.body.append(w);
+    w.querySelector('.av-x').addEventListener('click',()=>avClose(true));
+    w.querySelector('.av-skip').addEventListener('click',()=>avClose(true));
+    w.addEventListener('click',e=>{ if(e.target===w) avClose(true); });
+    w.addEventListener('keydown',e=>{ if(e.key==='Escape'){ e.stopPropagation(); avClose(true); } });
+  }
+  avLast=document.activeElement; avRoster();
+  w.hidden=false; requestAnimationFrame(()=>w.classList.add('on')); document.body.style.overflow='hidden';
+  setTimeout(()=>{ const f=w.querySelector('.av-tile'); if(f) f.focus({preventScroll:true}); },60);
+}
+function avClose(skipped){
+  const w=document.getElementById('avWrap'); if(!w||w.hidden) return;
+  if(skipped && !avGet()){ try{ sessionStorage.setItem(AVSKIP,'1'); }catch(_){} }
+  w.classList.remove('on'); document.body.style.overflow=''; setTimeout(()=>{ w.hidden=true; },260);
+  if(avLast && avLast.isConnected) avLast.focus({preventScroll:true});
+}
+function avRoster(){
+  const body=document.querySelector('#avWrap .av-body'); const cur=avGet();
+  body.innerHTML='<h2 class="av-h" id="avTitle">SELECT YOUR DESIGNER</h2><p class="av-sub">Pick the player that sounds most like you. You can change it any time.</p><div class="av-grid"></div>';
+  const g=body.querySelector('.av-grid');
+  AV.LIST.forEach(p=>{
+    const t=document.createElement('button'); t.type='button'; t.className='av-tile'+(cur===p.id?' current':''); t.setAttribute('aria-label','View '+p.name);
+    t.innerHTML=`<span class="av-pbox">${AV.portrait(p,72)}<span class="av-badge">${AV.item(p,22)}</span></span><span class="av-name">${p.short}</span>`;
+    t.addEventListener('click',()=>avDetail(p.id)); g.append(t);
+  });
+}
+function avDetail(id){
+  const p=AV.BY[id], body=document.querySelector('#avWrap .av-body'), col=AV.CC[p.cls];
+  const bar=v=>{ let s=''; for(let i=0;i<10;i++) s+=`<span class="${i<v?'on':''}"></span>`; return s; };
+  const stat=(lab,v)=>`<div class="av-stat"><span class="l">${lab}</span><span class="segs" role="img" aria-label="${lab} ${v} of 10">${bar(v)}</span><span class="v">${String(v).padStart(2,'0')}</span></div>`;
+  body.innerHTML=`<button type="button" class="av-back">\u2039 All designers</button>
+  <div class="av-top"><div class="av-big" style="--c:${col}">${AV.portrait(p,168,'Pixel portrait of '+p.name)}<span class="av-badge big">${AV.item(p,38)}</span></div>
+  <div class="av-info"><h2 class="av-n" id="avTitle">${p.name}</h2><span class="av-cls" style="background:${col}">CLASS: ${AV.CLS[p.cls]}</span><p class="av-d">${p.desc}</p><p class="av-aka">AKA ${p.aka}</p></div></div>
+  <div class="av-mid"><div class="av-stats">${stat('CURIOSITY',p.stats[0])}${stat('CRAFT',p.stats[1])}${stat('TECH',p.stats[2])}${stat('LEADERSHIP',p.stats[3])}</div>
+  <div class="av-move"><div class="h"><span>SPECIAL MOVE</span><span>ITEM: ${p.itemName}</span></div><b>${p.move}</b><p>${p.moveDesc}</p></div></div>
+  <div class="av-coop"><span class="h">CO-OP BONUS WITH</span></div>
+  <button type="button" class="av-go">SELECT THIS AVATAR \u25B6</button>`;
+  body.querySelector('.av-back').addEventListener('click',()=>{ avRoster(); const f=document.querySelector('#avWrap .av-tile'); if(f) f.focus(); });
+  const co=body.querySelector('.av-coop');
+  p.coop.forEach(cid=>{ const q=AV.BY[cid]; const c=document.createElement('button'); c.type='button'; c.className='av-chip'; c.style.borderColor=AV.CC[q.cls]; c.innerHTML=`<span class="m">${AV.portrait(q,26)}</span>${q.short}`; c.addEventListener('click',()=>avDetail(cid)); co.append(c); });
+  body.querySelector('.av-go').addEventListener('click',()=>{ avSet(id); avBtnRender(); const b=document.getElementById('avBtn'); if(b){ b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); } avClose(false); });
+  setTimeout(()=>body.querySelector('.av-go').focus({preventScroll:true}),40);
+}
+if(VIEW==='world'){
+  const tw=document.querySelector('.topbar .wrap');
+  const b=document.createElement('button'); b.type='button'; b.id='avBtn'; b.className='av-btn'; b.innerHTML='<span class="av-face"></span><span class="atip"></span>';
+  b.addEventListener('click',avOpen);
+  const wbtn=document.getElementById('worldBtn'); if(wbtn) wbtn.after(b); else tw.append(b);
+  avBtnRender();
+  let skipped=false; try{ skipped=sessionStorage.getItem(AVSKIP)==='1'; }catch(_){}
+  if(!avGet() && !skipped) setTimeout(avOpen, 350);
+}
+
 applyStatic(); layout(); renderFruits();
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{ if(!document.activeElement || !document.activeElement.isContentEditable) layout(); });
 loadContent().then(initEditing);
