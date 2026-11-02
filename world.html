@@ -1242,10 +1242,12 @@ async function initEditing(){
     ART=art; bar.hidden=false;
     try{ ASSETS = await window.claude.use('assets'); }catch(_){ ASSETS=null; }
     const draft=ss.get();
-    if(draft){ try{ const dC=JSON.parse(draft); if(dC && Array.isArray(dC.roles)){ C=dC; dirty=true; setEditing(true); say('Unsaved edits restored'); } }catch(_){ ss.del(); } }
+    if(draft){ try{ const dC=JSON.parse(draft); if(dC && Array.isArray(dC.roles)){ C=dC; ensureStories(); dirty=true; setEditing(true); say('Unsaved edits restored'); } }catch(_){ ss.del(); } }
   }catch(_){}
 }
 
+// map levels added in code are kept even if saved content (or an old draft) predates them
+function ensureStories(){ STORIES.forEach(st=>{ if(!C.roles.some(r=>r.id===st.id)) C.roles.push(clone(st)); }); }
 // ---------- Boot ----------
 async function loadContent(){
   try{
@@ -1255,6 +1257,7 @@ async function loadContent(){
     const data = await res.json();
     if(data && Array.isArray(data.roles) && Array.isArray(data.nodes) && Array.isArray(data.miles)){
       C = Object.assign(clone(DEFAULT), data); C.ui = Object.assign({}, DEFAULT.ui, data.ui||{}); C.head=Object.assign({},DEFAULT.head,data.head||{}); C.edu=Object.assign({},DEFAULT.edu,data.edu||{});
+      ensureStories();
       saved=clone(C);
       if(!dirty) renderAll();
     }

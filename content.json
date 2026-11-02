@@ -10,7 +10,7 @@
   },
   "ui": {
     "photoLabel": "Then & now",
-    "education": "Education",
+    "education": "2014 Art School Grad",
     "legendEdu": "Education",
     "postit": "Post-it",
     "overview": "Overview",
@@ -21,13 +21,13 @@
     "legendClient": "Client engagement",
     "legendMilestone": "Milestone",
     "openFile": "Open file",
+    "watch": "Watch video",
     "headline": "Highlighted skill",
     "hold": "Press and hold to reveal",
     "ask": "Ask about it",
     "pick": "Pick a client",
     "done": "You found everything in this file. Ask me about it in person.",
-    "uncovered": "uncovered",
-    "watch": "Watch video"
+    "uncovered": "uncovered"
   },
   "edu": {
     "label": "Milestone:",
@@ -435,7 +435,7 @@
       "story": true,
       "lane": 0,
       "s": 2025.5,
-      "e": 2026.0,
+      "e": 2026,
       "av": "Ar",
       "co": "Aroris Health",
       "role": "Internal scalers",
@@ -570,7 +570,7 @@
       "id": "s5",
       "story": true,
       "lane": 0,
-      "s": 2023.0,
+      "s": 2023,
       "e": 2023.5,
       "av": "Ap",
       "co": "Apple",
