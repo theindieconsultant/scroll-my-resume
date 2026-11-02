@@ -733,7 +733,7 @@ html.world .world-hint{display:block}
         <div class="track" id="track"></div>
       </div>
       <div class="wrap stage-foot">
-        <p class="world-hint mono">Hover or tap a level. Diamonds are bonus levels.</p>
+        <p class="world-hint mono">Hover or tap a level. Diamonds are bonus levels.<br><span style="opacity:.75">This site counts anonymous visits. No personal info is collected.</span></p>
         <div class="progress" aria-hidden="true"><span id="prog"></span></div>
         <p class="pan-hint mono"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11.5v-2a1.5 1.5 0 0 1 3 0V12M14 10.5a1.5 1.5 0 0 1 3 0V12M17 11.5a1.5 1.5 0 0 1 3 0V16a6 6 0 0 1-6 6h-2a6 6 0 0 1-5-2.7L4.3 15a1.5 1.5 0 0 1 2.4-1.8L8 15"/></svg><span data-k="ui.hint">Drag to pan, or use</span> <kbd>←</kbd> <kbd>→</kbd></p>
         <div class="legend mono">
@@ -1328,8 +1328,10 @@ function commentFab(){
   b.addEventListener('click', e=>{ e.stopPropagation(); showWin(); });
   viewport.append(b);
 }
+let winLogged=false;
 function showWin(){
   const w=document.getElementById('winWrap'); if(!w || !w.hidden) return;
+  if(!winLogged){ winLogged=true; hlLog('win'); }
   // fresh form every time, so someone who already sent a note can send another
   const fm=document.getElementById('winForm'), th=document.getElementById('winThanks'), st=document.getElementById('winStatus');
   if(fm) fm.hidden=false; if(th) th.hidden=true; if(st){ st.textContent=''; st.className='win-status'; }
@@ -1353,7 +1355,8 @@ document.getElementById('winWrap').addEventListener('keydown', e=>{ if(e.key==='
     if(!msg){ say2('Write a comment first.', true); return; }
     if(document.getElementById('winHoney').value){ hideWin(); return; }
     busy=true; btn.disabled=true; say2('Sending…');
-    const fields={'Comment':msg,'Reply to':from||'(no email given)','Sent from':location.href.split('#')[0]+' (resume game, all levels cleared)','Sent at':new Date().toLocaleString()};
+    let avId=''; try{ avId=localStorage.getItem('hl-avatar')||''; }catch(_){}
+    const fields={'Comment':msg,'Reply to':from||'(no email given)','Visitor':hlVid(),'Avatar':(typeof AV!=='undefined' && AV.BY[avId]) ? AV.BY[avId].name : '(none picked)','Sent from':location.href.split('#')[0]+' (resume game, all levels cleared)','Sent at':new Date().toLocaleString()};
     const services=[{url:'https://api.web3forms.com/submit', extra:{access_key:WEB3FORMS_KEY, subject:'Someone finished your resume game', from_name:'Heatherlee’s resume game', ...(from?{replyto:from}:{})}},
                     {url:FORMSUBMIT_URL, extra:{_subject:'Someone finished your resume game', _template:'box', _captcha:'false', ...(from?{_replyto:from}:{})}}];
     let lastErr;
@@ -1366,6 +1369,7 @@ document.getElementById('winWrap').addEventListener('keydown', e=>{ if(e.key==='
     }
     busy=false; btn.disabled=false;
     if(lastErr){ say2(`Couldn’t send. Email ${OWNER}`, true); return; }
+    hlLog('comment',{source:'resume game (winner)', text:msg, reply:from});
     say2(''); form.hidden=true; document.getElementById('winThanks').hidden=false;
   });
 })();
@@ -1831,6 +1835,16 @@ if(VIEW==='world'){
     renderFruits(); layoutWorld();
   });
 }
+// ---------- Anonymous visit log (Google Sheet + daily email to Heatherlee) ----------
+// Paste the Apps Script web-app URL here. Empty = nothing is sent. Views inside Claude are never counted.
+const LOG_URL = '';
+function hlVid(){ try{ let v=localStorage.getItem('hl-vid'); if(!v){ v='v-'+Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4); localStorage.setItem('hl-vid',v); } return v; }catch(_){ return 'unknown'; } }
+function hlLog(event, extra){
+  if(!LOG_URL || (window.claude && typeof window.claude.use==='function')) return;
+  let avatar=''; try{ avatar=localStorage.getItem('hl-avatar')||''; }catch(_){}
+  const body=JSON.stringify(Object.assign({event, vid:hlVid(), avatar, page:VIEW, ref:(document.referrer||'').slice(0,200)}, extra||{}));
+  try{ fetch(LOG_URL,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body}); }catch(_){}
+}
 // ---------- Avatar picker (world view): "Select your designer", opens on load until the visitor picks or skips ----------
 const AVKEY='hl-avatar', AVSKIP='hl-avatar-skip';
 const AV=(()=>{
@@ -1908,7 +1922,7 @@ function avOpen(){
 }
 function avClose(skipped){
   const w=document.getElementById('avWrap'); if(!w||w.hidden) return;
-  if(skipped && !avGet()){ try{ sessionStorage.setItem(AVSKIP,'1'); }catch(_){} }
+  if(skipped && !avGet()){ try{ sessionStorage.setItem(AVSKIP,'1'); }catch(_){} hlLog('skip'); }
   w.classList.remove('on'); document.body.style.overflow=''; setTimeout(()=>{ w.hidden=true; },260);
   if(avLast && avLast.isConnected) avLast.focus({preventScroll:true});
 }
@@ -1937,7 +1951,7 @@ function avDetail(id){
   body.querySelector('.av-back').addEventListener('click',()=>{ avRoster(); const f=document.querySelector('#avWrap .av-tile'); if(f) f.focus(); });
   const co=body.querySelector('.av-coop');
   p.coop.forEach(cid=>{ const q=AV.BY[cid]; const c=document.createElement('button'); c.type='button'; c.className='av-chip'; c.style.borderColor=AV.CC[q.cls]; c.innerHTML=`<span class="m">${AV.portrait(q,26)}</span>${q.short}`; c.addEventListener('click',()=>avDetail(cid)); co.append(c); });
-  body.querySelector('.av-go').addEventListener('click',()=>{ avSet(id); avClose(false); mcPlay(id, ()=>{ avBtnRender(); const b=document.getElementById('avBtn'); if(b){ b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); } }); });
+  body.querySelector('.av-go').addEventListener('click',()=>{ avSet(id); hlLog('avatar'); avClose(false); mcPlay(id, ()=>{ avBtnRender(); const b=document.getElementById('avBtn'); if(b){ b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); } }); });
   setTimeout(()=>body.querySelector('.av-go').focus({preventScroll:true}),40);
 }
 // ---------- Player-ready animation: a blocky, full-body 3D version of the chosen avatar (built from CSS cubes) ----------
@@ -1997,6 +2011,7 @@ if(VIEW==='world'){
 }
 
 applyStatic(); layout(); renderFruits();
+hlLog('visit');
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{ if(!document.activeElement || !document.activeElement.isContentEditable) layout(); });
 loadContent().then(initEditing);
 })();
