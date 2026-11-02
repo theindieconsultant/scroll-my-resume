@@ -710,42 +710,40 @@
             "fit": "contain",
             "bg": "#ffffff",
             "alt": "Returns process map for a guest who received a damaged item"
-          }
-        ],
-        "1": [
+          },
           {
             "src": "story-s7-2a.jpg",
             "fit": "contain",
             "bg": "#ffffff",
             "alt": "Survey results: 44.8% of agents ranked efficiency first"
-          },
+          }
+        ],
+        "1": [
           {
-            "src": "story-s7-2b.jpg",
+            "src": "target-2.jpg",
             "fit": "contain",
             "bg": "#ffffff",
-            "alt": "Persistent guest account profile"
-          },
-          {
-            "src": "story-s7-2c.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "Multi-session controls for chat agents"
+            "alt": "Guest account profile in the new service tool: orders, contacts, concessions, returns, risk score and recently viewed items"
           }
         ],
         "2": [
+          {
+            "src": "target-1.jpg",
+            "fit": "contain",
+            "bg": "#ffffff",
+            "alt": "Damaged-item resolution flow, and the proposal to pause promo emails until the transactional email is sent"
+          },
           {
             "src": "story-s7-3a.jpg",
             "fit": "contain",
             "bg": "#ffffff",
             "alt": "New guest search results"
-          },
-          {
-            "src": "story-s7-3b.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "Proposed flow: pause promo emails until the order confirmation is sent"
           }
         ]
+      },
+      "stack": {
+        "0": true,
+        "2": true
       }
     },
     {

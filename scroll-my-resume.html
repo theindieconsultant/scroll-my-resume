@@ -360,7 +360,15 @@ p{margin:0}
 .f-vault.open .vault-num,.f-vault.open .vault-cap{filter:none;opacity:1;user-select:auto}
 .f-q{grid-column:1/-1;font-size:clamp(24px,3.6vh,34px);line-height:1.05;letter-spacing:-.02em;font-variation-settings:"wdth" 88}
 .f-a{grid-column:1/-1;font-size:clamp(17px,2.3vh,21px);line-height:1.5;max-width:52ch;white-space:pre-line}
-.f-front:has(.f-pane.has-img){padding-right:calc(46% + 24px)}
+.f-front:has(.f-pane.has-img) > .f-head,.f-front:has(.f-pane.has-img) > .f-stage{margin-right:calc(46% - 8px)}
+.f-front{--foot-h:clamp(58px,7.4vh,72px)}
+.f-front:has(.f-pane.has-img) .f-img{bottom:var(--foot-h)}
+.f-foot{position:relative;z-index:2;margin-top:auto}
+/* fixed modal height, so Previous / Next sit in the same spot on every tab */
+.folder{height:min(760px,100%)}
+@media (max-width:640px){.folder{height:auto}}
+.f-img.stacked{display:flex;flex-direction:column;gap:2px;background:#ffffff}
+.f-img.stacked img{position:relative;inset:auto;flex:1 1 0;min-height:0;opacity:1}
 .f-front:has(.f-pane.has-img) .f-stage{position:static}
 .f-pane.has-img{grid-template-columns:minmax(0,1fr)}
 .f-img{position:absolute;top:0;right:0;bottom:0;width:46%;margin:0;z-index:0;overflow:hidden;
@@ -374,7 +382,9 @@ p{margin:0}
 .f-img::before{content:"";position:absolute;inset:0;z-index:1;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);
   -webkit-mask-image:linear-gradient(90deg,#000 0,#000 8%,transparent 34%);mask-image:linear-gradient(90deg,#000 0,#000 8%,transparent 34%)}
 @media (max-width:640px){
-  .f-front:has(.f-pane.has-img){padding-right:clamp(18px,3.4vw,36px)}
+  .f-front:has(.f-pane.has-img) > .f-head,.f-front:has(.f-pane.has-img) > .f-stage{margin-right:0}
+  .f-front:has(.f-pane.has-img) .f-img{bottom:auto}
+  .f-img.stacked{height:300px}
   .f-front:has(.f-pane.has-img) .f-stage{position:relative}
   .f-img{position:relative;inset:auto;width:auto;height:170px;border-radius:0 0 16px 16px;
     -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 35%);mask-image:linear-gradient(180deg,transparent 0,#000 35%)}
@@ -393,7 +403,10 @@ p{margin:0}
 @media (prefers-reduced-motion:reduce){.postit{animation:none}}
 .f-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1.5px solid color-mix(in srgb,var(--folder-ink) 25%,transparent);padding-top:12px;font-size:13px}
 .f-foot .mono{opacity:.75}
-.f-nav{display:flex;gap:8px}
+.f-nav{display:flex;gap:8px;margin-left:auto}
+.f-nav button{min-width:96px;justify-content:center}
+.f-nav button.close{background:var(--folder-ink);color:var(--folder);border-color:var(--folder-ink)}
+.f-nav button.close:hover{background:#000;color:var(--folder)}
 .f-tab span.l{white-space:nowrap}
 .f-nav button{white-space:nowrap;min-height:32px;padding:0 11px;font-size:12.5px!important;border-radius:999px;border:1.5px solid var(--folder-ink);background:transparent;color:var(--folder-ink);cursor:pointer;font-size:14px;font-weight:500}
 .f-nav button:hover{background:var(--folder-ink);color:var(--folder)}
@@ -1090,9 +1103,10 @@ function fillFolder(animate){
     if(im.length){
       const list=Array.isArray(im)?im:[im];
       pane.classList.add('has-img'); const fig=document.createElement('figure'); fig.className='f-img';
+      const stacked = !!(r.stack && r.stack[String(j)]) && list.length>1; if(stacked) fig.classList.add('stacked');
       const imgs=list.map((m,n)=>{ const img=document.createElement('img'); img.src=m.src; img.alt=m.alt; img.decoding='async'; if(m.fit) img.style.objectFit=m.fit; if(m.bg) img.style.background=m.bg; if(n===0) img.classList.add('on'); fig.append(img); return img; });
       if(list[0].bg) fig.style.background=list[0].bg;
-      if(list.length>1){
+      if(list.length>1 && !stacked){
         let cur=0; const dots=document.createElement('div'); dots.className='f-dots';
         const show=n=>{ imgs[cur].classList.remove('on'); dots.children[cur].setAttribute('aria-pressed','false'); cur=n; imgs[cur].classList.add('on'); dots.children[cur].setAttribute('aria-pressed','true'); fig.style.background=list[cur].bg||''; };
         list.forEach((m,n)=>{ const d=document.createElement('button'); d.type='button'; d.setAttribute('aria-label','Show image '+(n+1)+' of '+list.length); d.setAttribute('aria-pressed', n===0?'true':'false'); d.addEventListener('click',()=>{ show(n); clearInterval(imgTimer); }); dots.append(d); });
@@ -1105,7 +1119,7 @@ function fillFolder(animate){
   }
   gStage.append(pane);
   renderFoot();
-  gPrev.disabled = gTab===0; gNext.disabled = gTab===labels.length-1;
+  const lastTab = gTab===labels.length-1; gPrev.disabled = gTab===0; gNext.disabled=false; gNext.textContent = lastTab ? 'Close file' : 'Next tab'; gNext.classList.toggle('close', lastTab);
   gPrev.parentElement.hidden = labels.length<2;
 }
 function renderFoot(){
@@ -1125,7 +1139,7 @@ function renderFoot(){
 let gPop=-1, gWasEarned=false;
 function selectTab(k, animate){ gTab=k; if(k>0){ if(!gSeen.has(k)) gPop=k; gSeen.add(k); if(!editing) markFound(curRole, k-1); } fillFolder(animate); }
 gPrev.addEventListener('click', ()=>{ if(gTab>0) selectTab(gTab-1,true); });
-gNext.addEventListener('click', ()=>{ const r=C.roles[curRole]; if(gTab<r.probes.length) selectTab(gTab+1,true); });
+gNext.addEventListener('click', ()=>{ const r=C.roles[curRole]; if(gTab<r.probes.length) selectTab(gTab+1,true); else closeFile(); });
 document.getElementById('gClose').addEventListener('click', ()=>closeFile());
 folderWrap.addEventListener('click', e=>{ if(e.target===folderWrap) closeFile(); });
 function openFolder(i, from, clientIdx){
