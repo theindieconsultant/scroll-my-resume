@@ -409,6 +409,15 @@ p{margin:0}
 .world-btn .wtip{position:absolute;right:0;top:calc(100% + 10px);white-space:nowrap;font-family:var(--mono);font-weight:400;font-size:12px;background:var(--ink);color:var(--paper);padding:6px 10px;border-radius:6px;opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .2s;pointer-events:none}
 .world-btn:hover .wtip,.world-btn:focus-visible .wtip{opacity:1;transform:none}
 @media (max-width:520px){.world-btn{font-size:13px;padding:0 12px}}
+/* timeline view: the map button is a little card with a preview of the islands */
+.world-btn.card{flex-direction:column;align-items:stretch;gap:8px;width:200px;min-height:0;padding:8px 8px 9px;border-radius:16px}
+.world-btn.card .wb-thumb{display:block;width:100%;height:108px;object-fit:cover;border-radius:10px;border:2px solid var(--ink);background:#1c2028;image-rendering:pixelated;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.world-btn.card .wb-frame{position:relative;overflow:hidden;border-radius:10px}
+.world-btn.card:hover .wb-thumb,.world-btn.card:focus-visible .wb-thumb{transform:scale(1.06)}
+.world-btn.card .wb-tag{position:absolute;left:8px;top:8px;font-family:"Press Start 2P",var(--mono);font-size:8px;font-weight:400;line-height:1;letter-spacing:.04em;color:#15171d;background:var(--lime);padding:4px 5px;border-radius:4px;box-shadow:0 0 0 1.5px var(--ink)}
+.world-btn.card .wb-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 4px;font-size:15px}
+.world-btn.card .wtip{right:0}
+@media (max-width:640px){.world-btn.card{width:auto;flex-direction:row;padding:0 14px;min-height:44px;border-radius:999px}.world-btn.card .wb-frame{display:none}.world-btn.card .wb-row{padding:0}}
 html.world .ghost-year,html.world .progress,html.world .legend,html.world .pan-hint{display:none}
 /* world page: Google-Maps-like split, sidebar left + full-bleed map right */
 html.world .topbar .wrap{justify-content:flex-start;gap:16px;max-width:none}
@@ -699,6 +708,12 @@ if(!window.HL_VIEW){
     const h=document.querySelector('.stage-head h2'), sp=document.querySelector('.stage-head p'); if(h) h.dataset.k='head.worldTitle'; if(sp) sp.dataset.k='head.worldSub';
     if(wb){ wb.href='./'; wb.querySelector('span').textContent='Timeline view'; wb.querySelector('.wtip').textContent='Back to the scrolling timeline'; }
   }
+  if(wb && VIEW!=='world' && !wb.classList.contains('card')){
+    const sp=wb.querySelector('span'), arrow=wb.querySelector('svg'), row=document.createElement('div'); row.className='wb-row'; row.append(sp, arrow);
+    const fr=document.createElement('div'); fr.className='wb-frame'; fr.setAttribute('aria-hidden','true');
+    fr.innerHTML='<img class="wb-thumb" src="map-thumb.png" alt=""><span class="wb-tag">PLAY</span>';
+    wb.classList.add('card'); wb.prepend(fr, row);
+  }
   if(wb) wb.addEventListener('click',e=>{
     if(!(window.claude && typeof window.claude.use==='function')) return; // plain site: follow the link (new tab)
     e.preventDefault(); location.hash = VIEW==='world' ? '' : 'world';
@@ -817,7 +832,7 @@ function T(tag, cls, path){ const el=document.createElement(tag); if(cls) el.cla
 function makeEditable(el){ try{ el.contentEditable='plaintext-only'; if(el.contentEditable!=='plaintext-only') el.contentEditable='true'; }catch(_){ el.contentEditable='true'; } el.spellcheck=true; }
 function applyStatic(){ document.querySelectorAll('[data-k]').forEach(el=>{ if(document.activeElement!==el) el.textContent = getP(el.dataset.k) ?? ''; }); }
 
-const LOGO_IMG = {'mcad':'logo-mcad.png','optum-sr':'logo-optum.png','optum-cd':'logo-optum.png','apple':'logo-apple.png','aroris-f':'logo-aroris.png','aroris-p':'logo-aroris.png','s1':'logo-aroris.png','s2':'logo-aroris.png','s3':'logo-aroris.png','s4':'logo-apple.png','s5':'logo-apple.png','s6':'logo-optum.png'};
+const LOGO_IMG = {'mcad':'logo-mcad.png','optum-sr':'logo-optum.png','optum-cd':'logo-optum.png','apple':'logo-apple.png','aroris-f':'logo-aroris.png','aroris-p':'logo-aroris.png','s1':'logo-aroris.png','s2':'logo-aroris.png','s3':'logo-aroris.png','s4':'logo-apple.png','s5':'logo-apple.png','s6':'logo-optum.png','s7':'logo-target.png'};
 const LOGO_SVG = (document.querySelector('.mark svg')||{outerHTML:''}).outerHTML;
 const track = document.getElementById('track');
 const viewport = document.getElementById('viewport');
@@ -1140,6 +1155,8 @@ function openPhoto(i, from){
   const isVid=!!r.video, lab=document.getElementById('pcLabel');
   const ownLab = r.label!=null; lab.dataset.k = ownLab ? 'roles.'+i+'.label' : 'ui.photoLabel'; lab.textContent = ownLab ? (r.label||r.title||r.co) : (C.ui.photoLabel||'Then & now');
   photoCard.classList.toggle('titled', ownLab);
+  // photos with their own shape (r.ratio = width / height) get a card sized to fit them whole
+  { const pph=document.getElementById('pcPhoto'); pph.style.aspectRatio = r.ratio ? String(r.ratio) : ''; photoCard.style.width = r.ratio ? `min(calc((100svh - var(--banner-h) - 230px) * ${r.ratio} + 32px), calc(100vw - 32px), 640px)` : ''; }
   const ph=document.getElementById('pcPhoto'); ph.textContent=''; ph.classList.toggle('video', isVid); photoCard.classList.toggle('video', isVid);
   const lk=document.getElementById('pcLink'); if(r.link){ lk.href=r.link; lk.textContent=(r.linkText||'Watch on Instagram')+' ↗'; lk.hidden=false; } else lk.hidden=true;
   if(isVid){ const fr=document.createElement('iframe'); fr.src=r.video; fr.title=(r.title||r.co)+' video on Instagram'; fr.loading='lazy'; fr.allow='autoplay; encrypted-media; picture-in-picture; fullscreen'; fr.setAttribute('allowfullscreen',''); fr.referrerPolicy='strict-origin-when-cross-origin'; ph.append(fr); }

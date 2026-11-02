@@ -284,7 +284,7 @@
       "e": 2011.9,
       "thin": true,
       "av": "M",
-      "co": "MCAD",
+      "co": "MCAD 📍Minneapolis",
       "role": "BFA, Design & Entrepreneurial Studies",
       "dates": "2007 – 2011",
       "title": "BFA, Design and Entrepreneurial Studies",
@@ -307,7 +307,7 @@
       "title": "Prima DS: a design system built for AI-speed prototyping",
       "org": "@Aroris Health // 2025 - current",
       "lede": "I built a startup's design system from zero and turned it into the foundation that let anyone in the company prototype on-brand, with AI tools, in a single session.",
-      "hint": "Role: Founding Product Designer · Owner of Prima DS · Partners: engineering, product, leadership",
+      "hint": "Role: Founding Product Designer",
       "metric": {
         "v": "0-to-1 systems",
         "c": "0-to-1 systems thinking, design-to-code fluency, and leading AI adoption in a design org."
@@ -315,15 +315,15 @@
       "probes": [
         [
           "The Challenge",
-          "Aroris was moving fast on the Aroris360 healthcare revenue platform, but every new feature was designed from scratch. Screens drifted visually, engineers rebuilt the same components, and the digital brand looked early-stage to the clinicians we were asking to trust us with their reimbursement data. As AI and vibe-coding tools spread across the company, non-designers began generating UI too, with no shared system to keep it consistent."
+          "Aroris was moving fast on the Aroris360 healthcare revenue platform, and as AI and vibe-coding tools spread across the company, non-designers began generating UI too, with no shared system to keep it consistent. We were building our plane while flying it..."
         ],
         [
           "Design Approach",
-          "I built Prima DS from zero (Figma libraries, semantic tokens tied to code, governance) and made it usable inside AI and vibe-coding tools."
+          "Prima DS started design principles, then Figma libraries, semantic tokens tied to code, and eventually a simple governance model. I hosted a weekly Prima DS meeting with my associate and front-end egineering partners to continue evolving it, and making it work harder for us, including integrating with Claude Code and other AI design tools."
         ],
         [
           "The Impact",
-          "• Cut ideation-to-solution from four working sessions to one.\n• Accelerated prototyping and time to market for new features across the platform.\n• Gave Aroris a consistent, mature digital brand at the moment it began selling to larger practices.\n• Made design a company-wide capability: anyone could prototype a credible concept without waiting on a designer."
+          "Prima DS accelerated prototyping and time to market for new features across the platform, moving us from quarterly releases, to monthly, now multiple times a month. It gave Aroris a consistent, mature brand as our team started selling to larger practices, and made UI prototyping a company-wide capability."
         ]
       ],
       "tabs": [
@@ -369,26 +369,26 @@
       "co": "Aroris Health • A360 Platform",
       "role": "AI // Agentic workflows",
       "dates": "2025 – now",
-      "title": "Agentic workflows clinicians can trust",
+      "title": "Agentic workflows with in the loop humans",
       "org": "@Aroris Health // 2025 - current",
-      "lede": "I turned an email-and-phone service into an agent-assisted platform, with human checkpoints that kept AI output accurate enough for healthcare revenue decisions.",
-      "hint": "Role: Founding Product Designer · Partners: PM, AI engineer, data analysts, internal negotiators, beta customers",
+      "lede": "Since day 1 our product team has turned manual, spreadsheet tasks into easy to use UI experiences, and agent-assisted workflows to stand up a true digital platform. We intentionally design-in human checkpoints that keep AI output accurate and trustworthy for healthcare revenue decisions.",
+      "hint": "Role: Founding Product Designer",
       "metric": {
         "v": "Trustworthy AI",
-        "c": "Designing for AI uncertainty, trust and safety in a regulated domain, and shipping in stages with real users."
+        "c": "Designing for AI uncertainty, trust and safety in a regulated domain, internal workflows, and shipping in stages with real users."
       },
       "probes": [
         [
           "The Challenge",
-          "Aroris helps practices negotiate better reimbursement rates with payers. The service ran offline: analysts cleaned client data in spreadsheets, and negotiators built proposals by hand over email and phone. It did not scale, and clients had no visibility into progress. Adding AI could speed it up, but a wrong inference on a contract or a leaked piece of patient data (PHI) was not an acceptable failure."
+          "Before I was hired the entire business service offline: our analysts cleaned client data in spreadsheets, and negotiators built proposals by hand, updating clients over email and phone. Putting proposals together took days, and onboarding new clients took up about 12-16 weeks. It did not scale, and clients had no visibility into onboarding, or ongoing negotiations. So we launched A360..."
         ],
         [
           "Design Approach",
-          "I designed agent-assisted data cleanup and a Proposal Modeler, with PHI checks and human-in-the-loop checkpoints, released from alpha to beta to GA."
+          "Our team tackled high-touch areas of our business that was the most manual, expensive, and time-consuming. Our agents assisted in data cleanup, rate and policy analysis, and AI proposal modelers, all with built-in human-in-the-loop checkpoints, and client approval workflows."
         ],
         [
           "The Impact",
-          "• The AI-assisted cleanup workflow ran about 4x faster than the manual process on its first test run.\n• Moved the service from offline interactions to a self-serve, end-to-end platform used by internal teams and “DIY” client users.\n• Staged releases caught issues with real users before general availability, protecting trust with paying customers."
+          "• The AI-assisted cleanup workflow that kickstarted every onboarding task for new clients ran about 19x faster than the manual process on its first test run.\n• For the first time we could serve \"DIY\" users, allowing them to upload directly into the platform (vs. email), with our agents auto-analyzing their data immediately.\n• Our transparency tools ran agents that did ongoing market analysis so clients knew where they stood competitively"
         ]
       ],
       "tabs": [
@@ -437,63 +437,20 @@
       "s": 2025.5,
       "e": 2026,
       "av": "Ar",
-      "co": "A360 • Flagship product",
-      "role": "Live Claims Monitoring",
-      "dates": "2025 – now",
-      "title": "Internal scalers: from 3 weeks to 3 minutes",
+      "co": "Sushi x SCALER",
+      "role": "Team Culture (article)",
+      "dates": "02/2026",
+      "title": "Sushi + SCALER: Building Team Culture Like a Scaling Product",
       "org": "@Aroris Health // 2025 - current",
       "lede": "By designing tools for our own analysts first, we cut client file digitization from three weeks to under three minutes and gave the admin team back a full workday every week.",
-      "hint": "Role: Founding Product Designer · Partners: data analysts, customer success, sales, engineering",
-      "metric": {
-        "v": "Service design",
-        "c": "Service design thinking, operational ROI, and a lean build-measure-learn rhythm."
-      },
-      "probes": [
-        [
-          "The Challenge",
-          "A startup only scales if its internal operations do. At Aroris, onboarding a client meant digitizing contracts, claims and fee schedules by hand in offline spreadsheets. It took weeks, tied up analysts, and delayed the moment clients saw value. Customer success and sales had similar manual work, and none of it was visible in the product."
-        ],
-        [
-          "Design Approach",
-          "I designed internal tools first, tested them on real client work, then shipped them to customers, along with widgets like CPT Code Lookup."
-        ],
-        [
-          "The Impact",
-          "• File digitization dropped from 3 weeks to under 3 minutes.\n• Freed the admin team 8 to 16 hours per week.\n• Shipped new product features twice a month.\n• Internal tools became customer-facing features, so every operational win also grew the product."
-        ]
-      ],
-      "tabs": [
-        "Overview",
-        "Challenge",
-        "Approach",
-        "Impact"
-      ],
-      "images": {
-        "0": [
-          {
-            "src": "story-s3-1a.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "Internal file digitization progress view"
-          }
-        ],
-        "1": [
-          {
-            "src": "story-s3-2a.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "Fee schedule analysis widgets with market data"
-          }
-        ],
-        "2": [
-          {
-            "src": "story-s3-3a.jpg",
-            "fit": "contain",
-            "bg": "#000000",
-            "alt": "The Negotiation Strategy screen used by internal teams and clients"
-          }
-        ]
-      }
+      "probes": [],
+      "metric": null,
+      "photo": "sushi-scaler.jpg",
+      "ratio": 0.9562,
+      "label": "Sushi + SCALER",
+      "alt": "Sushi-making team celebration photos, the Sushi + SCALER article headline and the LinkedIn post text",
+      "link": "https://www.linkedin.com/pulse/sushi-scaler-building-team-culture-like-scaling-product-vtb0c/",
+      "linkText": "Read on LinkedIn"
     },
     {
       "id": "s4",
@@ -502,66 +459,60 @@
       "s": 2022.9,
       "e": 2023.4,
       "av": "Ap",
-      "co": "Apple: Supplier Care",
-      "role": "global B2B platform redesign",
+      "co": "Apple",
+      "role": "B2B platforms & legacy tool redesigns",
       "dates": "2022 – 2025",
-      "title": "Modernizing Apple's supplier platform",
+      "title": "Modernizing Apple's enterprise tools",
       "org": "@Apple, via Bitovi // 2022 - 2025",
-      "lede": "I brought consistency to a set of heavily used legacy supply chain tools at Apple and redesigned how Apple and its B2B partners communicate.",
-      "hint": "Role: Senior Product Designer (consultant via Bitovi) · Partners: supply chain leadership, product, engineering",
+      "lede": "I brought consistency to a set of heavily used legacy supply chain and logistics tools at Apple and redesigned how Apple and its B2B partners communicate. I worked on tools thousands of employees and partners use daily including, Supplier Care, AI Net, and the Apple Partner Portal. ",
+      "hint": "Role: Senior Product Designer, Consultant",
       "metric": {
         "v": "Enterprise systems",
         "c": "Design systems at enterprise scale, B2B collaboration tools, and credibility with senior stakeholders."
       },
       "probes": [
         [
-          "The Challenge",
-          "SupplierCare and the Partner Portal connect Apple with the suppliers and partners in its global supply chain. Years of independent feature work had left the tools inconsistent, and each team made its own UI decisions. Partners had no clear way to ask for help; support happened in scattered emails. Documents for programs and broadcasts lived in folder structures that were hard to navigate."
+          "Redesigning Legacy Systems",
+          "Years of independent feature work and design teams dedidcated to consumer products only left internal tools inconsistent, and outdated. Siloed Eng team made their own UI decisions with no designer. Partners had no clear way to ask for help; support happened in scattered emails, and documents for programs and broadcasts lived in folder structures that were hard to navigate..."
         ],
         [
-          "Design Approach",
-          "I created a SupplierCare design playbook and component toolkit, and designed “Ask Apple” chat and Pin Boards for the Partner Portal."
+          "Ask Apple // Slack-bot",
+          "“Ask Apple” was integrated into the Partner Portal, with goals to improve communication between the external partners and Apple, and to create pathways for users to proactively seek support, and Apple teams to efficiently engage with logistical, and real-ttime collaboration with global B2B partners."
         ],
         [
-          "The Impact",
-          "• Gave the team a single source of truth for UI decisions across heavily used legacy systems.\n• Created a direct support channel between Apple and its partners.\n• Earned praise from Apple stakeholders: “strong UI/design suggestions and mindset” (Global Head of Partner and Supply Chain Integration) and “great quality of work… navigating a demanding environment” (Worldwide Operations)."
+          "Global Tracking Dashboards",
+          "I designed a conceptual monitoring system giving Apple full end-to-end visibility, 24/7, into shipments arriving by ocean, air or, ground. An easily scannable dashboard with \"on-time\" and \"delayed\" tags, as well as a built-in desktop widget allowed logistical teams greater insight, efficiency, and real-time problem-solving abilities."
         ]
       ],
       "tabs": [
         "Overview",
-        "Challenge",
-        "Approach",
-        "Impact"
+        "B2B Legacy tools",
+        "Ask Apple",
+        "Ocean Shipments"
       ],
       "images": {
         "0": [
           {
-            "src": "story-s4-1a.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "Apple Park visitor center glass facade"
+            "src": "story-s4-u1.jpg",
+            "fit": "cover"
           }
         ],
         "1": [
-          {
-            "src": "story-s4-2a.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "SupplierCare playbook: rules for buttons"
-          },
           {
             "src": "story-s4-2b.jpg",
             "fit": "contain",
             "bg": "#ffffff",
             "alt": "SupplierCare tables built with the component toolkit"
+          },
+          {
+            "src": "story-s4-u2.jpg",
+            "fit": "cover"
           }
         ],
         "2": [
           {
-            "src": "story-s4-3a.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "Ask Apple chat and Pin Boards in the Partner Portal"
+            "src": "story-s4-u3.jpg",
+            "fit": "cover"
           }
         ]
       }
@@ -573,15 +524,15 @@
       "s": 2023,
       "e": 2023.5,
       "av": "Ap",
-      "co": "Calabrio/Teleopti merger",
-      "role": "+ Capital One Contextual Inquiries",
-      "dates": "2019 – 2020",
+      "co": "Apple",
+      "role": "Label-making tool",
+      "dates": "2022-2025",
       "title": "Replacing InDesign with a purpose-built label tool",
       "org": "@Apple Product Operations // 2022 - 2025",
       "lede": "I designed an internal app that let Apple's designers build product and shipping labels in a structured UI, with live syncing, approvals and send-to-factory built in, instead of InDesign.",
-      "hint": "Role: Senior Product Designer · Partners: internal label designers, operations, engineering",
+      "hint": "Role: Senior Product Designer, Consultant",
       "metric": {
-        "v": "Pro tools",
+        "v": "<$1M saved",
         "c": "Designing complex professional tools, replacing entrenched software, and working inside operational constraints."
       },
       "probes": [
@@ -644,23 +595,23 @@
       "title": "Netra: unifying Optum's clinical design system",
       "org": "@Optum Clinical Platform // 2020 - 2022",
       "lede": "I led a team that replaced 20 fragmented component libraries with one clinical design system. Within two years, 25+ internal platform teams were building with it.",
-      "hint": "Role: Creative Director, UX/UI · Managed 5 UX/UI designers · Partners: product leaders, engineering, platform teams",
+      "hint": "Role: Creative Director, UX/UI, Design Systems",
       "metric": {
-        "v": "Design leadership",
-        "c": "Org-level design leadership, managing and growing designers, driving adoption, and enterprise procurement."
+        "v": "Design System Leadership",
+        "c": "Org-level design leadership, managing and growing designers, driving design system adoption, and enterprise tool procurement."
       },
       "probes": [
         [
           "The Challenge",
-          "Optum's clinical products drew on two sister brands, Optum (orange) and UnitedHealthcare (blue). Teams had built about 20 separate component libraries, which diluted the brand, duplicated effort and made accessibility inconsistent. There was no enterprise Figma license, so designers couldn't share a single source of truth."
+          "Optum was undergoing a rebranding, due to years of inconsistent branding and outdated development processes. There were dozens of separate component libraries around the org, which diluted the brand, duplicated effort and made accessibility inconsistent. I was hired to draw on two sister brands, Optum (orange) and UnitedHealthcare (blue), and launch a new design system, to power a new clinical platform experience."
         ],
         [
           "Design Approach",
-          "I led five designers to build Netra, with tokens, switchable themes, dark mode and accessibility, and secured an enterprise Figma license."
+          "I led strategically hired and led five designers to build the Netra Design System, including primary and semantic tokens, switchable themes, dark mode, accessibility features, and a scalable contribution model. I also secured an enterprise-wide Figma license to power our platform-microservices approach."
         ],
         [
           "The Impact",
-          "• 20 legacy component libraries decommissioned.\n• 25+ internal platform teams building with Netra, including an enterprise telehealth and virtual-visit platform.\n• 5-star rating for the Netra onboarding experience.\n• One token change could now update every product at once."
+          "The company now enjoyed a token-powered design system for the first time in its history. Through this work: • 16+ legacy component libraries were decommissioned.\n• 25+ internal platform teams were building microproducts with Netra, including an enterprise telehealth // virtual-visit platform (which launched during Covid!)\n• 5-star rating for the Netra onboarding and Figma-training experience I led for internal design squads.\n"
         ]
       ],
       "tabs": [
@@ -724,10 +675,10 @@
       "co": "Target",
       "role": "Call center tool",
       "dates": "2017",
-      "title": "Designing for speed in Target's call center",
+      "title": "Building homegrown call center software",
       "org": "@Target // 2017",
-      "lede": "I surveyed 500+ service agents and used what they told me to design an in-house tool that replaced a vendor product and was built for speed.",
-      "hint": "Role: Senior UX Designer, eCommerce guest service · Partners: product, engineering, service operations, agents",
+      "lede": "The objective was phasing out a vendor product by migrating all of its functionality into Target's own homegrown service tool, powering post-order calls and agent experiences.  I surveyed 500+ service agents and used what they told me to design an in-house tool that replaced a vendor product and was built for speed.",
+      "hint": "Role: Senior UX Designer",
       "metric": {
         "v": "Research at scale",
         "c": "Research at scale, designing for expert users, and spotting improvements outside the brief."
@@ -735,15 +686,15 @@
       "probes": [
         [
           "The Challenge",
-          "Target's guest service agents worked in a third-party vendor tool for post-order calls and chats. Target wanted to phase it out by moving all of its functions into its own service tool, which had to mature by Q1 of the following year. The risk was clear: if the new tool slowed agents down, wait times and guest satisfaction would suffer."
+          "The objective was phasing out a vendor product by migrating all of its functionality into Target's own homegrown service tool, powering post-order calls and agent experiences.  I surveyed 500+ service agents and used what they told me to design an in-house tool that replaced a vendor product and was built for speed."
         ],
         [
           "Design Approach",
-          "I surveyed 500+ agents (44.8% ranked efficiency first), mapped returns flows, and designed persistent profiles, new search and multi-session controls."
+          "I sat and observed call center agents locally and surveyed 500+ worldwide agents, to learn pain points and understand workflows and design opportunities. I worked with the service team leads to map out return flows, and pitched new UI flows, like multi-session controls and auto-translation capabilities. "
         ],
         [
           "The Impact",
-          "• Gave Target a research-backed design for retiring the vendor tool, built on agents' own priorities.\n• Designed for the top need, efficiency, with fewer screen hops and safer multitasking."
+          "• Gave Target a research-backed design for retiring the vendor tool, built on agents' own priorities and serving top 10 return reasons.\n• Designed for safe and efficient multitasking. • Created roadmap for 6-month sunlighting process for IBM Sterling."
         ]
       ],
       "tabs": [
