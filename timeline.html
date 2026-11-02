@@ -451,6 +451,55 @@ html.world .topbar .replay{pointer-events:auto;margin:0 0 0 auto}
 .av-btn .atip{position:absolute;left:50%;top:calc(100% + 10px);transform:translate(-50%,-4px);white-space:nowrap;font-family:var(--mono);font-size:12px;background:var(--ink);color:var(--paper);padding:6px 10px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30}
 .av-btn:hover .atip,.av-btn:focus-visible .atip{opacity:1;transform:translate(-50%,0)}
 .av-btn.pop{animation:fruitPop .7s cubic-bezier(.2,.9,.3,1.5)}
+/* player-ready animation: blocky 3D avatar built from cubes */
+.mc-wrap{position:fixed;inset:0;z-index:80;display:grid;place-items:center;align-content:center;gap:calc(var(--u)*2);background:radial-gradient(circle at 50% 45%,rgba(43,46,54,.92),rgba(15,17,21,.95) 70%);cursor:pointer;animation:mcIn .3s ease both;overflow:hidden}
+.mc-wrap.out{animation:mcOut .38s ease both}
+@keyframes mcIn{from{opacity:0}to{opacity:1}}
+@keyframes mcOut{to{opacity:0}}
+.mc-stage{position:relative;width:calc(var(--u)*16);height:calc(var(--u)*36);perspective:calc(var(--u)*110);perspective-origin:50% 30%}
+.mc-rig{position:absolute;left:0;top:0;width:calc(var(--u)*16);height:calc(var(--u)*32);transform-style:preserve-3d;animation:mcRig 3.5s cubic-bezier(.3,.7,.3,1) both}
+.mc-part{position:absolute;transform-style:preserve-3d}
+.mc-f{position:absolute;backface-visibility:hidden}
+.mc-f svg{display:block;width:100%;height:100%}
+.mc-armR{transform-origin:50% calc(var(--u)*2);animation:mcArmR 3.5s ease-in-out both}
+.mc-armL{transform-origin:50% calc(var(--u)*2);animation:mcArmL 3.5s ease-in-out both}
+.mc-legR{transform-origin:50% 0;animation:mcLegR 3.5s ease-in-out both}
+.mc-legL{transform-origin:50% 0;animation:mcLegL 3.5s ease-in-out both}
+.mc-head{transform-origin:50% 100%;animation:mcHead 3.5s ease-in-out both}
+.mc-block{position:absolute;left:calc(var(--u)*-2);right:calc(var(--u)*-2);top:calc(var(--u)*32);height:calc(var(--u)*3);background:#d5f53c;box-shadow:inset 0 calc(var(--u)*-1) 0 #a6c11d,0 0 calc(var(--u)*5) rgba(213,245,60,.45);border:2px solid #15171d;animation:mcBlock 3.5s ease both}
+.mc-shadow{position:absolute;left:50%;top:calc(var(--u)*31);width:calc(var(--u)*14);height:calc(var(--u)*2);margin-left:calc(var(--u)*-7);border-radius:50%;background:rgba(0,0,0,.45);z-index:1;animation:mcShadow 3.5s ease both}
+.mc-sparks{position:absolute;left:50%;top:45%;width:0;height:0}
+.mc-sparks i{position:absolute;width:calc(var(--u)*1.2);height:calc(var(--u)*1.2);opacity:0;animation:mcSpark .9s cubic-bezier(.2,.8,.3,1) both}
+.mc-text{display:grid;justify-items:center;gap:8px;text-align:center;animation:mcText 3.5s ease both}
+.mc-text b{font-family:"Press Start 2P",var(--mono);font-weight:400;font-size:clamp(16px,2.4vw,26px);color:#d5f53c;letter-spacing:.04em;text-shadow:3px 3px 0 #0f1115}
+.mc-text span{font-family:var(--display);font-weight:800;font-size:clamp(18px,2.4vw,26px);color:#ffffff}
+.mc-text .mc-item{display:inline-flex;align-items:center;gap:8px;font-style:normal;font-family:var(--mono);font-size:13px;color:#15171d;background:var(--c);padding:4px 12px 4px 6px;border-radius:999px}
+.mc-text .mc-item svg{display:block;background:#15171d;border-radius:4px;padding:2px}
+@keyframes mcRig{
+  0%{transform:translateY(calc(var(--u)*-70)) rotateY(200deg)}
+  14%{transform:translateY(0) rotateY(35deg)}
+  17%{transform:translateY(calc(var(--u)*.6)) rotateY(35deg) scaleY(.94)}
+  21%{transform:translateY(0) rotateY(35deg)}
+  34%{transform:translateY(calc(var(--u)*-.8)) rotateY(-30deg)}
+  46%{transform:translateY(0) rotateY(10deg)}
+  52%{transform:translateY(0) rotateY(0deg)}
+  58%{transform:translateY(calc(var(--u)*.8)) rotateY(0deg) scaleY(.93)}
+  66%{transform:translateY(calc(var(--u)*-11)) rotateY(0deg)}
+  74%{transform:translateY(0) rotateY(0deg)}
+  77%{transform:translateY(calc(var(--u)*.4)) scaleY(.96)}
+  82%,100%{transform:translateY(0) rotateY(-12deg)}}
+@keyframes mcLegR{0%,21%{transform:none}27%{transform:rotateX(32deg)}33%{transform:rotateX(-32deg)}39%{transform:rotateX(32deg)}45%{transform:rotateX(-32deg)}51%,58%{transform:none}66%{transform:rotateX(-18deg) rotateZ(8deg)}74%,100%{transform:none}}
+@keyframes mcLegL{0%,21%{transform:none}27%{transform:rotateX(-32deg)}33%{transform:rotateX(32deg)}39%{transform:rotateX(-32deg)}45%{transform:rotateX(32deg)}51%,58%{transform:none}66%{transform:rotateX(18deg) rotateZ(-8deg)}74%,100%{transform:none}}
+@keyframes mcArmR{0%{transform:rotateZ(-25deg)}14%{transform:rotateZ(-10deg)}21%{transform:none}27%{transform:rotateX(-35deg)}33%{transform:rotateX(35deg)}39%{transform:rotateX(-35deg)}45%{transform:rotateX(35deg)}51%{transform:none}58%{transform:rotateZ(20deg)}66%,100%{transform:rotateZ(160deg)}}
+@keyframes mcArmL{0%{transform:rotateZ(25deg)}14%{transform:rotateZ(10deg)}21%{transform:none}27%{transform:rotateX(35deg)}33%{transform:rotateX(-35deg)}39%{transform:rotateX(35deg)}45%{transform:rotateX(-35deg)}51%{transform:none}58%{transform:rotateZ(-20deg)}66%{transform:rotateZ(-160deg)}72%{transform:rotateZ(-135deg)}78%{transform:rotateZ(-165deg)}84%{transform:rotateZ(-135deg)}90%,100%{transform:rotateZ(-160deg)}}
+@keyframes mcHead{0%,14%{transform:none}17%{transform:rotateX(10deg)}21%{transform:none}46%{transform:rotateY(-20deg)}54%{transform:none}66%{transform:rotateX(-12deg)}74%,100%{transform:none}}
+@keyframes mcShadow{0%{transform:scale(.3);opacity:0}14%{transform:scale(1);opacity:1}58%{transform:scale(1.05)}66%{transform:scale(.6);opacity:.5}74%,100%{transform:scale(1);opacity:1}}
+@keyframes mcBlock{0%{transform:scaleX(.2);opacity:0}10%{transform:none;opacity:1}100%{transform:none}}
+@keyframes mcSpark{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4) rotate(90deg)}}
+@keyframes mcText{0%,55%{opacity:0;transform:translateY(12px) scale(.9)}64%{opacity:1;transform:scale(1.06)}70%,100%{opacity:1;transform:none}}
+.mc-wrap.still *{animation:none!important}
+.mc-wrap.still .mc-armR{transform:rotateZ(160deg)}.mc-wrap.still .mc-armL{transform:rotateZ(-160deg)}.mc-wrap.still .mc-rig{transform:rotateY(-12deg)}.mc-wrap.still .mc-text{opacity:1}
+
 .av-wrap{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:calc(16px + var(--banner-h,0px)) 16px 16px;background:rgba(15,17,21,.72);opacity:0;transition:opacity .25s}
 .av-wrap[hidden]{display:none}
 .av-wrap.on{opacity:1}
@@ -1831,7 +1880,8 @@ const AV=(()=>{
   }
   const portrait=(p,px,label)=>svgRows(rowsFor(p), {K:'#15171d',W:'#ffffff',L:ACC,S:SKIN[p.skin],H:p.H,C:CC[p.cls],A:p.A||'#3a7fb5'}, 16, 16, px, label);
   const item=(p,px)=>svgRows(ITEMS[p.item], IPAL, 8, 8, px);
-  return {LIST, BY, CC, CLS, portrait, item};
+  const colors=p=>({S:SKIN[p.skin],H:p.H,C:CC[p.cls],A:p.A||'#3a7fb5'});
+  return {LIST, BY, CC, CLS, portrait, item, colors};
 })();
 function avGet(){ try{ const id=localStorage.getItem(AVKEY); return AV.BY[id]?id:null; }catch(_){ return null; } }
 function avSet(id){ try{ localStorage.setItem(AVKEY,id); }catch(_){} }
@@ -1888,8 +1938,54 @@ function avDetail(id){
   body.querySelector('.av-back').addEventListener('click',()=>{ avRoster(); const f=document.querySelector('#avWrap .av-tile'); if(f) f.focus(); });
   const co=body.querySelector('.av-coop');
   p.coop.forEach(cid=>{ const q=AV.BY[cid]; const c=document.createElement('button'); c.type='button'; c.className='av-chip'; c.style.borderColor=AV.CC[q.cls]; c.innerHTML=`<span class="m">${AV.portrait(q,26)}</span>${q.short}`; c.addEventListener('click',()=>avDetail(cid)); co.append(c); });
-  body.querySelector('.av-go').addEventListener('click',()=>{ avSet(id); avBtnRender(); const b=document.getElementById('avBtn'); if(b){ b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); } avClose(false); });
+  body.querySelector('.av-go').addEventListener('click',()=>{ avSet(id); avClose(false); mcPlay(id, ()=>{ avBtnRender(); const b=document.getElementById('avBtn'); if(b){ b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); } }); });
   setTimeout(()=>body.querySelector('.av-go').focus({preventScroll:true}),40);
+}
+// ---------- Player-ready animation: a blocky, full-body 3D version of the chosen avatar (built from CSS cubes) ----------
+function mcPlay(id, done){
+  const p=AV.BY[id]; if(!p){ done&&done(); return; }
+  const col=AV.colors(p), PANTS='#2b2e36', SHOE='#15171d';
+  const pal={S:col.S,H:col.H,C:col.C,A:col.A,K:'#15171d',W:'#ffffff',L:'#d5f53c',P:PANTS,B:SHOE};
+  const grid=(rows)=>{ const w=rows[0].length,h=rows.length; let r=''; rows.forEach((row,y)=>{ let x=0; while(x<w){ const c=pal[row[x]]; if(!c){x++;continue;} let n=1; while(row[x+n]===row[x]) n++; r+=`<rect x="${x}" y="${y}" width="${n}" height="1" fill="${c}"/>`; x+=n; } }); return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" shape-rendering="crispEdges">${r}</svg>`; };
+  const fill=(ch,w,h)=>Array.from({length:h},()=>ch.repeat(w));
+  // head textures (8 x 8 per face)
+  const hairTop = p.hair==='beanie' ? 'A' : 'H';
+  let front=['HHHHHHHH','HHHHHHHH','HSSSSSSH','SSSSSSSS', p.glasses?'KWKKKKWK':'SKSSSSKS','SSSSSSSS','SSSKKSSS','SSSSSSSS'];
+  if(p.hair==='beanie'){ front[0]='AAAAAAAA'; front[1]='AAAAAAAA'; front[2]='KLLLLLLK'; }
+  if(p.hair==='swoop'){ front[2]='HHHHHSSS'; }
+  if(p.hair==='bun'){ front[0]='HHHHHHHH'; }
+  if(p.hair==='afro'){ front[2]='HHSSSSHH'; }
+  if(p.hair==='long'){ for(let y=2;y<8;y++) front[y]='H'+front[y].slice(1,7)+'H'; }
+  if(p.hair==='beard'){ front[6]='HHSKKSHH'; front[7]='HHHHHHHH'; }
+  const side=Array.from({length:8},(_,y)=> (y<3 || p.hair==='long' || (p.hair==='afro'&&y<5) || (p.hair==='beard'&&y>5)) ? 'HHHHHHHH' : 'HHSSSSSS');
+  if(p.hair==='beanie'){ side[0]=side[1]='AAAAAAAA'; }
+  const headF={front:grid(front), back:grid(fill('H',8,8).map((r,y)=>p.hair==='beanie'&&y<2?'AAAAAAAA':r)), left:grid(side), right:grid(side.map(r=>r.split('').reverse().join(''))), top:grid(fill(hairTop,8,8)), bottom:grid(fill('S',8,8))};
+  const bodyFront=['CCCSSCCC'].concat(Array(5).fill('CCCLLCCC'),Array(5).fill('CCCCCCCC'),['KKKKKKKK']);
+  const bodyF={front:grid(bodyFront), back:grid(fill('C',8,11).concat(['KKKKKKKK'])), left:grid(fill('C',4,11).concat(['KKKK'])), right:grid(fill('C',4,11).concat(['KKKK'])), top:grid(fill('C',8,4)), bottom:grid(fill('P',8,4))};
+  const arm=fill('C',4,4).concat(fill('S',4,8)); const armF={front:grid(arm),back:grid(arm),left:grid(arm),right:grid(arm),top:grid(fill('C',4,4)),bottom:grid(fill('S',4,4))};
+  const leg=fill('P',4,10).concat(fill('B',4,2)); const legF={front:grid(leg),back:grid(leg),left:grid(leg),right:grid(leg),top:grid(fill('P',4,4)),bottom:grid(fill('B',4,4))};
+  const U=Math.max(7, Math.min(12, Math.floor(Math.min(innerWidth,innerHeight)/62)));
+  const cub=(cls,x,y,w,h,d,f)=>{
+    const W=w*U,H=h*U,D=d*U;
+    const face=(n,fw,fh,tr,shade)=>`<div class="mc-f" style="width:${fw}px;height:${fh}px;left:${(W-fw)/2}px;top:${(H-fh)/2}px;transform:${tr};filter:brightness(${shade})">${f[n]}</div>`;
+    return `<div class="mc-part ${cls}" style="left:${x*U}px;top:${y*U}px;width:${W}px;height:${H}px">`+
+      face('front',W,H,`translateZ(${D/2}px)`,1)+face('back',W,H,`rotateY(180deg) translateZ(${D/2}px)`,.78)+
+      face('right',D,H,`rotateY(90deg) translateZ(${W/2}px)`,.86)+face('left',D,H,`rotateY(-90deg) translateZ(${W/2}px)`,.86)+
+      face('top',W,D,`rotateX(90deg) translateZ(${H/2}px)`,1.08)+face('bottom',W,D,`rotateX(-90deg) translateZ(${H/2}px)`,.7)+`</div>`;
+  };
+  const rig = cub('mc-head',4,0,8,8,8,headF)+cub('mc-body',4,8,8,12,4,bodyF)+cub('mc-armR',0,8,4,12,4,armF)+cub('mc-armL',12,8,4,12,4,armF)+cub('mc-legR',4,20,4,12,4,legF)+cub('mc-legL',8,20,4,12,4,legF);
+  const ov=document.createElement('div'); ov.className='mc-wrap'+(reduce?' still':''); ov.setAttribute('role','status'); ov.setAttribute('aria-label','Player 1 ready: '+p.name);
+  ov.style.setProperty('--u',U+'px'); ov.style.setProperty('--c',col.C);
+  let spark=''; for(let i=0;i<14;i++){ const a=i/14*Math.PI*2, r=(150+((i*37)%5)*22)*U/10; spark+=`<i style="--dx:${Math.round(Math.cos(a)*r)}px;--dy:${Math.round(Math.sin(a)*r-60*U/10)}px;background:${i%3===0?'#ffffff':i%3===1?'#d5f53c':col.C};animation-delay:${1.85+(i%4)*0.04}s"></i>`; }
+  ov.innerHTML=`<div class="mc-stage"><div class="mc-shadow"></div><div class="mc-block"></div><div class="mc-rig">${rig}</div><div class="mc-sparks">${spark}</div></div>
+    <div class="mc-text"><b>PLAYER 1 READY</b><span>${p.name}</span><em class="mc-item">${AV.item(p,26)} ${p.move}</em></div>`;
+  document.body.append(ov);
+  let finished=false;
+  const end=()=>{ if(finished) return; finished=true; ov.classList.add('out'); setTimeout(()=>{ ov.remove(); done&&done(); }, 380); };
+  const t=setTimeout(end, reduce?1800:3500);
+  ov.addEventListener('click',()=>{ clearTimeout(t); end(); });
+  const key=e=>{ if(e.key==='Escape'||e.key==='Enter'||e.key===' '){ e.preventDefault(); clearTimeout(t); end(); document.removeEventListener('keydown',key,true); } };
+  document.addEventListener('keydown',key,true);
 }
 if(VIEW==='world'){
   const tw=document.querySelector('.topbar .wrap');
