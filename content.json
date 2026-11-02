@@ -720,14 +720,6 @@
         ],
         "1": [
           {
-            "src": "target-2.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "Guest account profile in the new service tool: orders, contacts, concessions, returns, risk score and recently viewed items"
-          }
-        ],
-        "2": [
-          {
             "src": "target-1.jpg",
             "fit": "contain",
             "bg": "#ffffff",
@@ -739,11 +731,19 @@
             "bg": "#ffffff",
             "alt": "New guest search results"
           }
+        ],
+        "2": [
+          {
+            "src": "target-2.jpg",
+            "fit": "contain",
+            "bg": "#ffffff",
+            "alt": "Guest account profile in the new service tool: orders, contacts, concessions, returns, risk score and recently viewed items"
+          }
         ]
       },
       "stack": {
         "0": true,
-        "2": true
+        "1": true
       }
     },
     {
