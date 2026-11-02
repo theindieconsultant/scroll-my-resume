@@ -493,6 +493,10 @@ html.world .world-hint{display:block}
 .wc-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-family:var(--mono);font-size:12px}
 .wc-dates{background:var(--ink);color:var(--lime);padding:3px 8px;border-radius:999px}
 .wc-found{color:var(--ink-2)}
+.wc-fruit{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-weight:700;color:var(--ink)}
+.wc-fruit svg{display:block;image-rendering:pixelated;filter:grayscale(1);opacity:.4}
+.wc-fruit.won{background:#15171d;color:#ffffff;padding:4px 10px 4px 6px;border-radius:999px}
+.wc-fruit.won svg{filter:none;opacity:1}
 .wc-earned{display:flex;align-items:center;gap:8px;justify-self:start;background:#15171d;color:#ffffff;padding:5px 10px 5px 6px;border-radius:999px;font-family:var(--mono);font-weight:700;font-size:12px;white-space:nowrap}
 .wc-earned svg{display:block;image-rendering:pixelated}
 .wc-open{justify-self:start;display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:0 14px;border-radius:999px;border:2px solid var(--ink);background:var(--lime);color:var(--on-lime);font-weight:600;font-size:14px;cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
@@ -1470,10 +1474,7 @@ function layoutWorld(){
       const head=document.createElement('div'); head.className='wc-head'; const lt=T('span','lt'); lt.append(T('strong',null,P+'co'), T('small',null,P+'role'));
       head.append(roleAvatar(r), lt); card.append(head);
       const meta=document.createElement('div'); meta.className='wc-meta'; meta.append(T('span','wc-dates',P+'dates'));
-      if(r.probes.length){ const f=T('span','wc-found'); f.textContent=`${foundCount(r)}/${r.probes.length} post-its`; meta.append(f); }
-      else if(r.kind==='edu'){ meta.append(T('span','wc-found','ui.education')); }
-      else if(r.video){ const b=T('span','wc-found'); b.textContent='Bonus level'; meta.append(b); }
-      { const fnc=fruitFor(ri); if(fnc && isEarned(r)){ const e=document.createElement('div'); e.className='wc-earned'; e.innerHTML=spriteSVG(fnc,20); const t=document.createElement('span'); t.textContent=`${FRUIT_NAMES[fnc]} · ${FRUIT_POINTS[fnc].toLocaleString('en-US')} pts earned`; e.append(t); meta.after ? 0 : 0; card._earned=e; } }
+      { const fnc=fruitFor(ri); if(fnc){ const won=isEarned(r); const f=document.createElement('span'); f.className='wc-fruit'+(won?' won':''); f.innerHTML=spriteSVG(fnc,18); const t=document.createElement('span'); t.textContent=`${FRUIT_POINTS[fnc].toLocaleString('en-US')} pts${won?' earned':''}`; f.append(t); f.setAttribute('aria-label', `${FRUIT_NAMES[fnc]}, ${FRUIT_POINTS[fnc].toLocaleString('en-US')} points${won?', earned':''}`); meta.append(f); } }
       card.append(meta); if(card._earned) card.append(card._earned);
       if(r.probes.length || r.photo || r.video){ const ob=document.createElement('button'); ob.type='button'; ob.className='wc-open'; ob.append(T('span',null, r.video?(r.cta!=null?'roles.'+ri+'.cta':'ui.watch'):'ui.openFile')); ob.insertAdjacentHTML('beforeend','<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'); ob.addEventListener('click',e=>{ e.stopPropagation(); openFile(ri, node); }); card.append(ob); }
       label=`${st.bonus?'Bonus level':'Level'} ${st.n}: ${r.co}, ${r.role}, ${r.dates}`;
