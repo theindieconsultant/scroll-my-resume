@@ -26,7 +26,8 @@
     "ask": "Ask about it",
     "pick": "Pick a client",
     "done": "You found everything in this file. Ask me about it in person.",
-    "uncovered": "uncovered"
+    "uncovered": "uncovered",
+    "watch": "Watch video"
   },
   "edu": {
     "label": "Milestone:",
@@ -878,6 +879,26 @@
           }
         ]
       }
+    },
+    {
+      "id": "htg",
+      "story": true,
+      "kind": "video",
+      "lane": 0,
+      "s": 2026.75,
+      "e": 2026.8,
+      "av": "★",
+      "co": "Hack the Gap",
+      "role": "2nd place · Common Plate",
+      "dates": "10/2026",
+      "title": "Hack the Gap, 2nd place",
+      "org": "Common Plate",
+      "lede": "Our team, Common Plate, took 2nd place at Hack the Gap.",
+      "label": "Bonus level 10",
+      "video": "https://www.instagram.com/reel/Den-iXgBG7B/embed/",
+      "link": "https://www.instagram.com/reel/Den-iXgBG7B/",
+      "metric": null,
+      "probes": []
     }
   ],
   "nodes": [
