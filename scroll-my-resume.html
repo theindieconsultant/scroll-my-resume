@@ -377,6 +377,26 @@ html.world .stage{display:grid;grid-template-columns:minmax(300px,380px) minmax(
 html.world .stage > .wrap{width:auto;max-width:none;margin:0}
 html.world .stage-head{grid-column:1;grid-row:1;min-height:0;overflow:auto;padding-bottom:12px;background:var(--paper);border-right:2px solid var(--ink)}
 html.world .stage-head h2{font-size:clamp(18px,1.6vw,22px)}
+.wh-row{display:flex;align-items:flex-start;gap:12px;width:100%}
+.wh-row h2{flex:1;min-width:0}
+.replay{position:relative;flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:var(--sheet);color:var(--ink);cursor:pointer;box-shadow:2px 2px 0 var(--ink);transition:background .2s,transform .2s}
+.replay:hover,.replay:focus-visible{background:var(--lime);color:var(--on-lime);transform:translate(-1px,-1px)}
+.replay.spin svg{animation:replaySpin .7s cubic-bezier(.2,.8,.2,1)}
+@keyframes replaySpin{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
+.replay .rtip{position:absolute;right:0;top:calc(100% + 8px);z-index:30;white-space:nowrap;font-family:var(--mono);font-size:11px;font-weight:500;background:var(--ink);color:var(--paper);padding:6px 9px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .2s}
+.replay:hover .rtip,.replay:focus-visible .rtip{opacity:1}
+.scorecard{width:100%;display:grid;gap:8px;margin-top:4px;padding:14px 16px 12px;background:#ffffff;color:#15171d;border:2px solid #15171d;border-radius:14px;box-shadow:5px 5px 0 #15171d,0 18px 30px -18px rgba(0,0,0,.35)}
+.sc-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-bottom:1.5px dashed #bdb8ad;padding-bottom:8px}
+.sc-label{font-family:"Press Start 2P",var(--mono);font-size:10px;letter-spacing:.06em}
+.sc-val{font-family:var(--mono);font-size:12px;color:#474b57}
+.sc-val b{font-family:"Press Start 2P",var(--mono);font-size:14px;color:#15171d;font-weight:400}
+.scorecard .fruits{margin:2px 0 0 -4px;flex-wrap:nowrap}
+html.world .scorecard .fruit{width:31px;height:36px}
+html.world .scorecard .fruit svg{width:24px;height:24px}
+html.world .scorecard .fruit.bonus{margin-left:9px}
+.wh-row h2{max-width:none!important}
+.scorecard p{margin:0;color:#474b57!important;font-size:14px;max-width:none}
+@media (prefers-reduced-motion:reduce){.replay.spin svg{animation:none}}
 html.world .stage-foot{grid-column:1;grid-row:2;justify-content:flex-start;background:var(--paper);border-right:2px solid var(--ink);padding-top:10px}
 html.world .viewport{grid-column:2;grid-row:1/3;margin-top:calc(var(--banner-h) + env(safe-area-inset-top,0px));overflow:hidden;background:#1c2028;cursor:grab;touch-action:none;display:block}
 html.world .viewport.dragging{cursor:grabbing}
@@ -1283,6 +1303,10 @@ function renderFruits(justEarned){
   const tt=document.createElement('span'); tt.className='ftip'; tt.textContent=`Trophy · ${FRUIT_POINTS.trophy.toLocaleString('en-US')} pts bonus`; t.append(tt);
   if(all){ const tag=document.createElement('span'); tag.className='fpts'; tag.textContent=FRUIT_POINTS.trophy.toLocaleString('en-US'); t.append(tag); }
   fruitRow.append(t);
+  const sv=document.getElementById('scoreVal');
+  if(sv){ let pts=0; files.forEach(({r},k)=>{ if(isEarned(r)) pts+=FRUIT_POINTS[FRUIT_ORDER[k % FRUIT_ORDER.length]]; }); if(all) pts+=FRUIT_POINTS.trophy;
+    const max=files.reduce((a,_,k)=>a+FRUIT_POINTS[FRUIT_ORDER[k % FRUIT_ORDER.length]],0)+FRUIT_POINTS.trophy;
+    sv.textContent=String(pts).padStart(5,'0'); document.getElementById('scoreMax').textContent='/ '+max.toLocaleString('en-US'); }
 }
 
 // ---------- World map view (world.html) ----------
@@ -1486,6 +1510,23 @@ if(VIEW==='world'){
 }
 document.addEventListener('click',e=>{ if(VIEW==='world' && !e.target.closest('.wstop') && !e.target.closest('.edit-bar,.folder-wrap,.scrim')) document.querySelectorAll('.wstop.open').forEach(o=>o.classList.remove('open')); });
 
+// ---------- World sidebar: scorecard + replay ----------
+if(VIEW==='world'){
+  const head=document.querySelector('.stage-head'), h2=head.querySelector('h2'), sub=head.querySelector('p');
+  const row=document.createElement('div'); row.className='wh-row'; h2.before(row); row.append(h2);
+  const rb=document.createElement('button'); rb.type='button'; rb.className='replay'; rb.setAttribute('aria-label','Replay: clicking this will refresh the map and clear your fruit and flags');
+  rb.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 3v6h6"/></svg><span class="rtip">REPLAY: Clicking this will refresh the map</span>';
+  row.append(rb);
+  const card=document.createElement('section'); card.className='scorecard'; card.setAttribute('aria-label','Scorecard');
+  card.innerHTML='<div class="sc-top"><span class="sc-label">Score</span><span class="sc-val"><b id="scoreVal">00000</b> <span id="scoreMax"></span></span></div>';
+  row.after(card); card.append(fruitRow); if(sub) card.append(sub);
+  rb.addEventListener('click',()=>{
+    try{ localStorage.removeItem(FKEY); }catch(_){}
+    FOUND={}; document.querySelectorAll('.wstop.open').forEach(o=>o.classList.remove('open'));
+    rb.classList.remove('spin'); void rb.offsetWidth; rb.classList.add('spin');
+    renderFruits(); layoutWorld();
+  });
+}
 applyStatic(); layout(); renderFruits();
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{ if(!document.activeElement || !document.activeElement.isContentEditable) layout(); });
 loadContent().then(initEditing);
