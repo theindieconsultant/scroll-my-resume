@@ -293,6 +293,27 @@ p{margin:0}
 .f-vault .hold{margin-top:12px;min-height:46px;border-color:var(--folder-ink);color:var(--folder-ink)}
 .f-vault .hold .fill{background:#ffffff}
 .f-vault.open .hold{display:none}
+.photo-wrap{position:fixed;inset:0;z-index:45;display:grid;place-items:center;padding:calc(16px + var(--banner-h) + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));pointer-events:none}
+.photo-wrap[hidden]{display:none}
+.photo-card{pointer-events:auto;display:grid;gap:12px;padding:16px;background:var(--folder);color:var(--folder-ink);border:2px solid var(--folder-ink);border-radius:22px;box-shadow:6px 6px 0 var(--folder-ink),0 40px 80px -30px rgba(0,0,0,.5);
+  width:min(calc((100svh - var(--banner-h) - 170px) * 0.75 + 32px), calc(100vw - 32px), 640px);opacity:0;transform:translateY(30px) rotate(1.5deg) scale(.96);transition:opacity .3s,transform .5s cubic-bezier(.2,.9,.2,1.05)}
+.photo-wrap.on .photo-card{opacity:1;transform:none}
+.pc-top{display:flex;align-items:center;gap:12px}
+.pc-label{font-family:var(--mono);font-size:14px;letter-spacing:.04em;flex:1}
+.pc-fruit{display:inline-flex;align-items:center;gap:8px}
+.pc-fruit .fname{font-family:"Press Start 2P",var(--mono);font-size:10px}
+.pc-fruit .fmini svg{filter:grayscale(1);opacity:.35}
+.pc-fruit .fmini.earned svg{filter:none;opacity:1}
+.pc-fruit .fmini.pop svg{animation:fruitPop .7s cubic-bezier(.2,.9,.3,1.5)}
+.photo-card .x{width:40px;height:40px;border-color:var(--folder-ink);color:var(--folder-ink);background:transparent}
+.photo-card .x:hover{background:var(--folder-ink);color:var(--folder)}
+.pc-photo{aspect-ratio:1170/1560;width:100%;border-radius:14px;overflow:hidden;background:#15171d}
+.pc-photo img{display:block;width:100%;height:100%;max-width:100%;object-fit:cover;filter:blur(20px) saturate(.6);transform:scale(1.08);transition:filter .7s,transform .7s}
+.photo-card.open .pc-photo img{filter:none;transform:none}
+.photo-card .hold{margin-top:0;border-color:var(--folder-ink);color:var(--folder-ink)}
+.photo-card .hold .fill{background:#ffffff}
+.photo-card.open .hold{display:none}
+@media (prefers-reduced-motion:reduce){.photo-card{transition:opacity .2s}}
 .vault-photo{margin-top:8px;height:clamp(180px,34vh,320px);border-radius:10px;overflow:hidden;background:#15171d}
 .vault-photo img{display:block;width:100%;height:100%;max-width:100%;object-fit:contain;filter:blur(18px) saturate(.6);transform:scale(1.08);transition:filter .6s,transform .6s}
 .f-vault.open .vault-photo img{filter:none;transform:none}
@@ -511,6 +532,17 @@ html.world .world-hint{display:block}
   <span class="eb-status" id="eStatus" aria-live="polite" hidden></span>
 </div>
 <div class="scrim" id="scrim" hidden></div>
+<div class="photo-wrap" id="photoWrap" hidden>
+  <div class="photo-card" id="photoCard" role="dialog" aria-modal="true" aria-labelledby="pcLabel">
+    <div class="pc-top">
+      <span class="pc-label" id="pcLabel" data-k="ui.photoLabel">Then &amp; now</span>
+      <span class="pc-fruit" id="pcFruit"></span>
+      <button class="x" id="pcClose" type="button" aria-label="Close"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.8" fill="none"/></svg></button>
+    </div>
+    <div class="pc-photo" id="pcPhoto"></div>
+    <div class="hold" id="pcHold" role="button" tabindex="0"><span class="fill"></span><span class="t" data-k="ui.hold">Press and hold to reveal</span></div>
+  </div>
+</div>
 <div class="folder-wrap" id="folderWrap" hidden>
   <div class="folder" id="folder" role="dialog" aria-modal="true" aria-labelledby="gTitle">
     <div class="f-tabs" id="gTabs" role="tablist" aria-label="Case file tabs"></div>
@@ -863,7 +895,8 @@ function photoTools(r,i,j,fig,curFn){
   return box;
 }
 const isFolder = r => !!r;
-const isOpen = ()=> !file.hidden || !folderWrap.hidden;
+const isOpen = ()=> !file.hidden || !folderWrap.hidden || !photoWrap.hidden;
+const photoWrap=document.getElementById('photoWrap'), photoCard=document.getElementById('photoCard');
 function bindHold(h, v, onOpen){
   const f=h.querySelector('.fill');
   const start=()=>{ if(editing) return; if(reduce){ v.classList.add('open'); onOpen&&onOpen(); return; } h.classList.add('holding'); };
@@ -987,7 +1020,30 @@ function openFolder(i, from, clientIdx){
   setTimeout(()=>document.getElementById('gClose').focus({preventScroll:true}), 60);
 }
 
+function photoFoot(r,i,pop){
+  const box=document.getElementById('pcFruit'); box.textContent=''; const fn=fruitFor(i); if(!fn) return;
+  const m=document.createElement('span'); m.className='fmini'+(ovDone(r)?' earned':'')+(pop?' pop':''); m.innerHTML=spriteSVG(fn,20);
+  const t=document.createElement('span'); t.className='fname'; t.textContent=`${FRUIT_NAMES[fn]} - ${FRUIT_POINTS[fn].toLocaleString('en-US')}`;
+  box.append(m,t);
+}
+let pcBound=false;
+function openPhoto(i, from){
+  const r=C.roles[i]; lastFocus=from; curRole=i; gWasEarned=isEarned(r);
+  document.getElementById('pcLabel').textContent=C.ui.photoLabel||'Then & now';
+  const ph=document.getElementById('pcPhoto'); ph.textContent=''; const im=document.createElement('img'); im.src=r.photo; im.alt=(r.lede||r.title||r.co); ph.append(im);
+  photoCard.classList.toggle('open', editing);
+  const h=document.getElementById('pcHold'); h.classList.remove('holding');
+  if(!pcBound){ pcBound=true; bindHold(h, photoCard, ()=>{ const rr=C.roles[curRole]; if(rr && !editing && !ovDone(rr)){ markOverview(curRole); photoFoot(rr,curRole,true); } }); document.getElementById('pcClose').addEventListener('click',()=>closeFile()); photoWrap.addEventListener('click',e=>{ if(e.target===photoWrap) closeFile(); }); }
+  photoFoot(r,i,false);
+  if(editing) makeEditable(document.getElementById('pcLabel'));
+  document.documentElement.classList.add('folder-open');
+  scrim.hidden=false; photoWrap.hidden=false;
+  requestAnimationFrame(()=>{ scrim.classList.add('on'); photoWrap.classList.add('on'); });
+  document.body.style.overflow='hidden';
+  setTimeout(()=>document.getElementById('pcClose').focus({preventScroll:true}), 60);
+}
 function openFile(i, from, clientIdx){
+  if(C.roles[i] && C.roles[i].photo && !C.roles[i].probes.length) return openPhoto(i, from);
   if(isFolder(C.roles[i])) return openFolder(i, from, clientIdx);
   lastFocus=from; curRole=i; curClient=(clientIdx==null?null:clientIdx);
   fillFile();
@@ -1000,10 +1056,10 @@ function openFile(i, from, clientIdx){
 }
 function closeFile(){
   if(curRole>-1){ const r=C.roles[curRole]; if(r && !gWasEarned && isEarned(r)){ const all=caseFiles().every(o=>isEarned(o.r)); setTimeout(()=>{ renderFruits(r.id); if(all) setTimeout(()=>renderFruits('trophy'), 800); }, 380); } gWasEarned=false; }
-  scrim.classList.remove('on'); file.classList.remove('on'); folderWrap.classList.remove('on');
+  scrim.classList.remove('on'); file.classList.remove('on'); folderWrap.classList.remove('on'); photoWrap.classList.remove('on');
   document.documentElement.classList.remove('file-open','folder-open');
   document.body.style.overflow='';
-  setTimeout(()=>{ scrim.hidden=true; file.hidden=true; folderWrap.hidden=true; }, 520);
+  setTimeout(()=>{ scrim.hidden=true; file.hidden=true; folderWrap.hidden=true; photoWrap.hidden=true; }, 520);
   curRole=-1;
   if(lastFocus && lastFocus.isConnected) lastFocus.focus({preventScroll:true});
 }
@@ -1012,7 +1068,7 @@ scrim.addEventListener('click', closeFile);
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape' && isOpen()){ if(document.activeElement && document.activeElement.isContentEditable){ document.activeElement.blur(); return; } closeFile(); }
   if(e.key==='Tab' && isOpen()){
-    const box = file.hidden ? folderEl : file;
+    const box = !photoWrap.hidden ? photoCard : (file.hidden ? folderEl : file);
     const f=[...box.querySelectorAll('button,[role="button"],[contenteditable="true"],[contenteditable="plaintext-only"]')].filter(b=>b.offsetParent!==null);
     if(!f.length) return;
     if(e.shiftKey && document.activeElement===f[0]){e.preventDefault(); f[f.length-1].focus();}
