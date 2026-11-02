@@ -4,7 +4,7 @@
 <meta name="description" content="Heatherlee Nguyen, product design leader. An interactive timeline of 15 years in B2B UX, design systems and AI design.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Press+Start+2P&display=swap">
 <style>
 /* Layout: the HLUX mark, then a pinned stage where vertical scroll, drag or arrow keys pan a
    horizontal swimlane timeline (2011 to now). Roles open into a side case file to uncover. */
@@ -93,7 +93,11 @@ p{margin:0}
 .fruit .ftip{position:absolute;left:50%;top:calc(100% + 4px);transform:translateX(-50%);white-space:nowrap;font-family:var(--mono);font-size:11px;
   color:var(--paper);background:var(--ink);padding:3px 7px;border-radius:5px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:5}
 .fruit:hover .ftip,.fruit:focus-visible .ftip{opacity:1}
-.f-foot .fmini{display:inline-flex;vertical-align:middle;margin-right:8px}
+.f-foot .mono#gCount{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+.fminis{display:inline-flex;gap:3px}
+.f-foot .fname{font-family:"Press Start 2P",var(--mono);font-size:10px;letter-spacing:.02em}
+.f-foot .fmini.pop svg{animation:fruitPop .7s cubic-bezier(.2,.9,.3,1.5)}
+.f-foot .fmini{display:inline-flex;vertical-align:middle}
 .f-foot .fmini svg{filter:grayscale(1);opacity:.35}
 .f-foot .fmini.earned svg{filter:none;opacity:1}
 @media (prefers-reduced-motion:reduce){.fruit.pop svg{animation:none}}
@@ -243,6 +247,14 @@ p{margin:0}
 .f-tab:hover{background:var(--folder-tab);transform:translateY(-3px)}
 .f-tab[aria-selected="true"]{background:var(--folder-paper);z-index:3;transform:translateY(-4px)}
 .f-tab:focus-visible{outline:none;box-shadow:inset 0 0 0 3px var(--folder-ink)}
+.editing .f-tab .l[contenteditable]{outline:1.5px dashed currentColor;outline-offset:2px;cursor:text;-webkit-line-clamp:unset}
+.f-img.placeholder{display:grid;place-items:center;background:#15171d;
+  background-image:radial-gradient(circle,#3b4250 1.2px,transparent 1.6px);background-size:12px 12px}
+.ph-inner{display:grid;justify-items:center;gap:10px;color:#d5f53c;font-family:"Press Start 2P",var(--mono);font-size:10px;letter-spacing:.04em;padding-left:22%}
+.ph-inner span{color:#d9dbe2}
+.ph-tools{position:absolute;z-index:4;left:30%;right:14px;bottom:14px;display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.ph-tools .eb{min-height:36px;padding:0 14px;font-size:13px}
+@media (max-width:640px){.ph-inner{padding-left:0}.ph-tools{left:14px}}
 .f-tab .tick-dot{flex:none;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--folder-ink);background:transparent}
 .f-tab.seen .tick-dot{background:var(--folder-ink)}
 .f-tab:nth-child(1){z-index:2}
@@ -810,6 +822,37 @@ const IMAGES = {
   }
 };
 let imgTimer=null;
+function imagesFor(r,j){
+  if(r.images && Object.prototype.hasOwnProperty.call(r.images, String(j))){ const v=r.images[String(j)]; return Array.isArray(v)?v.filter(Boolean):(v?[v]:[]); }
+  const d=(IMAGES[r.id]||{})[j]; return d ? (Array.isArray(d)?d.slice():[d]) : [];
+}
+let ASSETS=null;
+function photoTools(r,i,j,fig,curFn){
+  const box=document.createElement('div'); box.className='ph-tools';
+  const has=imagesFor(r,j).length>0;
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='image/png,image/jpeg,image/webp,image/gif'; inp.hidden=true; inp.id='phUp'+i+'_'+j;
+  const add=document.createElement('button'); add.type='button'; add.className='eb primary'; add.textContent= has ? 'Add photo' : 'Upload photo';
+  add.addEventListener('click',e=>{ e.stopPropagation(); if(!ASSETS){ say('Photo upload isn’t available in this view.'); return; } inp.click(); });
+  inp.addEventListener('change', async ()=>{
+    const f=inp.files && inp.files[0]; if(!f) return;
+    add.disabled=true; add.textContent='Uploading…';
+    try{
+      const res=await ASSETS.upload(f);
+      const list=imagesFor(r,j); list.push({src:res.url, fit:'cover'});
+      r.images=r.images||{}; r.images[String(j)]=list; dirty=true; bSave.disabled=false; ss.set(JSON.stringify(C)); say('Photo added. Save to publish it.'); fillFolder(false);
+    }catch(err){
+      const c=err&&err.code; say(c==='too_large'?'That photo is too large. Try one under 20 MB.':c==='unsupported_type'?'Use a PNG, JPG, WebP or GIF.':c==='not_granted'?'Only editors can add photos.':'Couldn’t upload that photo. Try again.');
+      add.disabled=false; add.textContent= has ? 'Add photo' : 'Upload photo';
+    }
+  });
+  box.append(add, inp);
+  if(has){
+    const rm=document.createElement('button'); rm.type='button'; rm.className='eb'; rm.textContent='Remove photo';
+    rm.addEventListener('click',e=>{ e.stopPropagation(); const list=imagesFor(r,j); const n=typeof curFn==='function'?Math.max(0,curFn()):0; list.splice(n,1); r.images=r.images||{}; r.images[String(j)]=list; dirty=true; bSave.disabled=false; ss.set(JSON.stringify(C)); say('Photo removed. Save to publish it.'); fillFolder(false); });
+    box.append(rm);
+  }
+  return box;
+}
 const isFolder = r => !!r;
 const isOpen = ()=> !file.hidden || !folderWrap.hidden;
 function bindHold(h, v, onOpen){
@@ -830,11 +873,18 @@ function fillFolder(animate){
   gTabs.textContent='';
   const labels=[['ui.overview',null]].concat(r.probes.map((p,j)=>[P+'probes.'+j+'.0', j]));
   labels.forEach(([path,j],k)=>{
-    const b=document.createElement('button'); b.type='button'; b.className='f-tab'+(k>0 && gSeen.has(k)?' seen':''); b.setAttribute('role','tab');
+    const b=document.createElement('div'); b.className='f-tab'+(k>0 && gSeen.has(k)?' seen':''); b.setAttribute('role','tab');
     b.id='gtab'+k; b.setAttribute('aria-controls','gpane'); b.setAttribute('aria-selected', k===gTab?'true':'false'); b.tabIndex = k===gTab?0:-1;
     if(k>0){ const dot=document.createElement('span'); dot.className='tick-dot'; dot.setAttribute('aria-hidden','true'); b.append(dot); }
-    const l=document.createElement('span'); l.className='l'; l.textContent = k===0 ? (getP(path)??'') : `${C.ui.postit} ${k}`; if(k===0) l.dataset.mirror=path; else b.setAttribute('aria-label', `${C.ui.postit} ${k}: ${getP(path)??''}`); b.append(l);
-    b.addEventListener('click', ()=>selectTab(k, true));
+    const def = k===0 ? (C.ui.overview||'Overview') : `${C.ui.postit||'Post-it'} ${k}`;
+    if(editing){ if(!Array.isArray(r.tabs)) r.tabs=[]; if(r.tabs[k]==null||r.tabs[k]==='') r.tabs[k]=def; }
+    const name = (Array.isArray(r.tabs) && r.tabs[k]) ? r.tabs[k] : def;
+    const l=document.createElement('span'); l.className='l'; l.textContent=name;
+    if(editing){ l.dataset.k=P+'tabs.'+k; if(k===gTab) makeEditable(l); }
+    if(k>0) b.setAttribute('aria-label', `${name}: ${getP(path)??''}`);
+    b.append(l);
+    b.addEventListener('click', ()=>{ if(editing && k===gTab) return; selectTab(k, true); if(editing){ const nl=gTabs.children[k] && gTabs.children[k].querySelector('.l'); if(nl) nl.focus(); } });
+    b.addEventListener('keydown', e=>{ if(e.target!==b) return; if(e.key==='Enter'||e.key===' '){ e.preventDefault(); selectTab(k,true); gTabs.children[k].focus(); } });
     b.addEventListener('keydown', e=>{
       if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ e.preventDefault(); e.stopPropagation(); const n=(k+(e.key==='ArrowRight'?1:-1)+labels.length)%labels.length; selectTab(n,true); gTabs.children[n].focus(); }
     });
@@ -862,8 +912,9 @@ function fillFolder(animate){
     const note=document.createElement('div'); note.className='postit'; const body=document.createElement('div'); body.className='pi-body';
     body.append(num, T('h3','f-q',P+'probes.'+j+'.0')); note.append(body);
     pane.append(note, T('p','f-a',P+'probes.'+j+'.1'));
-    const im = (IMAGES[r.id]||{})[j];
-    if(im){
+    const im = imagesFor(r,j).map(x=>Object.assign({alt:getP(P+'probes.'+j+'.0')||''},x));
+    if(!im.length){ pane.classList.add('has-img'); const fig=document.createElement('figure'); fig.className='f-img placeholder'; fig.innerHTML='<div class="ph-inner" aria-hidden="true"><svg viewBox="0 0 12 10" width="48" height="40" shape-rendering="crispEdges"><path fill="currentColor" d="M4 0h4v1h3v1h1v8H0V2h1V1h3zM1 3v6h10V3zm4 1h2v1h1v2H7v1H5V7H4V5h1z"/></svg><span>Photo coming soon</span></div>'; if(editing) fig.append(photoTools(r,i,j,fig,0)); pane.append(fig); }
+    if(im.length){
       const list=Array.isArray(im)?im:[im];
       pane.classList.add('has-img'); const fig=document.createElement('figure'); fig.className='f-img';
       const imgs=list.map((m,n)=>{ const img=document.createElement('img'); img.src=m.src; img.alt=m.alt; img.decoding='async'; if(m.fit) img.style.objectFit=m.fit; if(m.bg) img.style.background=m.bg; if(n===0) img.classList.add('on'); fig.append(img); return img; });
@@ -875,15 +926,26 @@ function fillFolder(animate){
         fig.append(dots);
         if(!reduce) imgTimer=setInterval(()=>{ if(!fig.isConnected){ clearInterval(imgTimer); return; } if(!fig.matches(':hover')) show((cur+1)%imgs.length); }, 4500);
       }
+      if(editing) fig.append(photoTools(r,i,j,fig,()=>fig.querySelectorAll('img').length>1 ? [...fig.querySelectorAll('img')].findIndex(x=>x.classList.contains('on')) : 0));
       pane.append(fig);
     }
   }
   gStage.append(pane);
-  gCount.textContent = `${gSeen.size} of ${r.probes.length} ${C.ui.foundPosts || C.ui.found || 'found post-its'}`;
-  { const fn=fruitFor(i); if(fn){ const m=document.createElement('span'); m.className='fmini'+(isEarned(r)?' earned':''); m.innerHTML=spriteSVG(fn,18); gCount.prepend(m); } }
+  gCount.textContent='';
+  { const fn=fruitFor(i);
+    if(fn){
+      const row=document.createElement('span'); row.className='fminis';
+      labels.forEach((_,k)=>{ const m=document.createElement('span'); const on = k===0 || gSeen.has(k); m.className='fmini'+(on?' earned':'')+(on && gPop===k?' pop':''); m.innerHTML=spriteSVG(fn,18); row.append(m); });
+      const seenN = 1 + [...gSeen].filter(k=>k>0 && k<labels.length).length;
+      row.setAttribute('aria-label', `${seenN} of ${labels.length} tabs viewed`);
+      const txt=document.createElement('span'); txt.className='fname'; txt.textContent=`${FRUIT_NAMES[fn]} - ${FRUIT_POINTS[fn].toLocaleString('en-US')}`;
+      gCount.append(row, txt);
+    } }
+  gPop=-1;
   gPrev.disabled = gTab===0; gNext.disabled = gTab===labels.length-1;
 }
-function selectTab(k, animate){ gTab=k; if(k>0){ gSeen.add(k); if(!editing) markFound(curRole, k-1); } fillFolder(animate); }
+let gPop=-1;
+function selectTab(k, animate){ gTab=k; if(k>0){ if(!gSeen.has(k)) gPop=k; gSeen.add(k); if(!editing) markFound(curRole, k-1); } fillFolder(animate); }
 gPrev.addEventListener('click', ()=>{ if(gTab>0) selectTab(gTab-1,true); });
 gNext.addEventListener('click', ()=>{ const r=C.roles[curRole]; if(gTab<r.probes.length) selectTab(gTab+1,true); });
 document.getElementById('gClose').addEventListener('click', ()=>closeFile());
@@ -891,6 +953,7 @@ folderWrap.addEventListener('click', e=>{ if(e.target===folderWrap) closeFile();
 function openFolder(i, from, clientIdx){
   lastFocus=from; curRole=i; gTab=0; gVaultOpen=false;
   gSeen=new Set((FOUND[C.roles[i].id]||[]).filter(j=>j<C.roles[i].probes.length).map(j=>j+1));
+  gPop=0;
   if(clientIdx!=null && C.roles[i].probes[clientIdx]){ gTab=clientIdx+1; gSeen.add(gTab); markFound(i, clientIdx); }
   fillFolder(false);
   document.documentElement.classList.add('folder-open');
@@ -1045,6 +1108,7 @@ async function initEditing(){
     if(!art || !user) return;
     if(!(await user.canEdit())) return;
     ART=art; bar.hidden=false;
+    try{ ASSETS = await window.claude.use('assets'); }catch(_){ ASSETS=null; }
     const draft=ss.get();
     if(draft){ try{ const dC=JSON.parse(draft); if(dC && Array.isArray(dC.roles)){ C=dC; dirty=true; setEditing(true); say('Unsaved edits restored'); } }catch(_){ ss.del(); } }
   }catch(_){}
