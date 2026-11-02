@@ -454,7 +454,7 @@ html.world .topbar .replay{pointer-events:auto;margin:0 0 0 auto}
 .av-wrap{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:calc(16px + var(--banner-h,0px)) 16px 16px;background:rgba(15,17,21,.72);opacity:0;transition:opacity .25s}
 .av-wrap[hidden]{display:none}
 .av-wrap.on{opacity:1}
-.av-card{position:relative;width:min(760px,100%);max-height:calc(100svh - var(--banner-h,0px) - 32px);overflow:auto;box-sizing:border-box;padding:30px 32px 20px;display:grid;gap:14px;background:#15171d;color:#eceae4;border:3px solid #3a3d45;border-radius:18px;box-shadow:8px 8px 0 #0f1115;transform:translateY(18px) scale(.97);transition:transform .45s cubic-bezier(.2,.9,.2,1.1)}
+.av-card{transition:transform .45s cubic-bezier(.2,.9,.2,1.1),border-color .25s;position:relative;width:min(760px,100%);max-height:calc(100svh - var(--banner-h,0px) - 32px);overflow:auto;box-sizing:border-box;padding:30px 32px 20px;display:grid;gap:14px;background:#15171d;color:#eceae4;border:3px solid #3a3d45;border-radius:18px;box-shadow:8px 8px 0 #0f1115;transform:translateY(18px) scale(.97);transition:transform .45s cubic-bezier(.2,.9,.2,1.1)}
 .av-wrap.on .av-card{transform:none}
 :where(.av-card) button{font:inherit;cursor:pointer}
 .av-card button:focus-visible{outline:3px solid #d5f53c;outline-offset:3px;box-shadow:none}
@@ -465,8 +465,11 @@ html.world .topbar .replay{pointer-events:auto;margin:0 0 0 auto}
 .av-sub{margin:-4px 0 0;text-align:center;color:#b9b6ae;font-size:15px}
 .av-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;justify-self:center;width:min(560px,100%)}
 .av-tile{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 6px 10px;background:#1d2026;border:3px solid #3a3d45;border-radius:12px;box-shadow:0 4px 0 #0f1115;color:#ffffff;transition:transform .18s cubic-bezier(.2,.8,.2,1.4),border-color .2s}
-.av-tile:hover{transform:translateY(-4px);border-color:#d5f53c}
-.av-tile.current{border-color:#d5f53c}
+.av-tile{border-color:var(--c,#3a3d45)}
+.av-tile:hover{transform:translateY(-4px);box-shadow:0 4px 0 #0f1115,0 0 0 3px color-mix(in srgb,var(--c) 35%,transparent)}
+.av-tile.current{box-shadow:0 4px 0 #0f1115,0 0 0 3px #d5f53c}
+.av-tile .av-badge{border-color:var(--c,#d5f53c)}
+.av-big .av-badge{border-color:var(--c,#d5f53c)}
 .av-pbox{position:relative;display:grid;place-items:center;width:88px;height:88px;background:#e4e1da;border-radius:6px}
 .av-badge{position:absolute;right:-10px;bottom:-8px;display:grid;place-items:center;width:30px;height:30px;background:#15171d;border:2px solid #d5f53c;border-radius:7px}
 .av-badge.big{width:54px;height:54px;right:-14px;bottom:-14px;border-radius:10px}
@@ -1764,6 +1767,7 @@ if(VIEW==='world'){
   rb.addEventListener('click',()=>{
     try{ localStorage.removeItem(FKEY); }catch(_){}
     FOUND={}; document.querySelectorAll('.wstop.open').forEach(o=>o.classList.remove('open'));
+    try{ localStorage.removeItem(AVKEY); sessionStorage.removeItem(AVSKIP); }catch(_){} avBtnRender(); // replay starts over, avatar included
     rb.classList.remove('spin'); void rb.offsetWidth; rb.classList.add('spin');
     renderFruits(); layoutWorld();
   });
@@ -1849,17 +1853,18 @@ function avClose(skipped){
   if(avLast && avLast.isConnected) avLast.focus({preventScroll:true});
 }
 function avRoster(){
-  const body=document.querySelector('#avWrap .av-body'); const cur=avGet();
+  const body=document.querySelector('#avWrap .av-body'); const cur=avGet(); document.querySelector('#avWrap .av-card').style.borderColor='';
   body.innerHTML='<h2 class="av-h" id="avTitle">SELECT YOUR DESIGNER</h2><p class="av-sub">Pick the player that sounds most like you. You can change it any time.</p><div class="av-grid"></div>';
   const g=body.querySelector('.av-grid');
   AV.LIST.forEach(p=>{
-    const t=document.createElement('button'); t.type='button'; t.className='av-tile'+(cur===p.id?' current':''); t.setAttribute('aria-label','View '+p.name);
+    const t=document.createElement('button'); t.type='button'; t.className='av-tile'+(cur===p.id?' current':''); t.style.setProperty('--c', AV.CC[p.cls]); t.setAttribute('aria-label','View '+p.name);
     t.innerHTML=`<span class="av-pbox">${AV.portrait(p,72)}<span class="av-badge">${AV.item(p,22)}</span></span><span class="av-name">${p.short}</span>`;
     t.addEventListener('click',()=>avDetail(p.id)); g.append(t);
   });
 }
 function avDetail(id){
   const p=AV.BY[id], body=document.querySelector('#avWrap .av-body'), col=AV.CC[p.cls];
+  document.querySelector('#avWrap .av-card').style.borderColor=col; // the card takes the class color, as in the original picker
   const bar=v=>{ let s=''; for(let i=0;i<10;i++) s+=`<span class="${i<v?'on':''}"></span>`; return s; };
   const stat=(lab,v)=>`<div class="av-stat"><span class="l">${lab}</span><span class="segs" role="img" aria-label="${lab} ${v} of 10">${bar(v)}</span><span class="v">${String(v).padStart(2,'0')}</span></div>`;
   body.innerHTML=`<button type="button" class="av-back">\u2039 All designers</button>
@@ -1882,7 +1887,7 @@ if(VIEW==='world'){
   const wbtn=document.getElementById('worldBtn'); if(wbtn) wbtn.after(b); else tw.append(b);
   avBtnRender();
   let skipped=false; try{ skipped=sessionStorage.getItem(AVSKIP)==='1'; }catch(_){}
-  if(!avGet() && !skipped) setTimeout(avOpen, 350);
+  if(!avGet() && !skipped) setTimeout(()=>{ if(!avGet()) avOpen(); }, 3000);
 }
 
 applyStatic(); layout(); renderFruits();
