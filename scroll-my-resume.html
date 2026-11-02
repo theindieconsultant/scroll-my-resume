@@ -397,6 +397,8 @@ html.world .world-hint{display:block}
 .wstop.left .wcard{left:-10px;transform:translateY(6px)}
 .wstop:hover .wcard,.wstop:focus-within .wcard,.wstop.open .wcard{opacity:1;pointer-events:auto;transform:translateX(-50%)}
 .wstop.right:hover .wcard,.wstop.right:focus-within .wcard,.wstop.right.open .wcard,.wstop.left:hover .wcard,.wstop.left:focus-within .wcard,.wstop.left.open .wcard{transform:none}
+.editing .wstop.open .wcard{opacity:1;pointer-events:auto}
+.editing .wcard [data-k]{white-space:normal}
 .wc-head{display:flex;align-items:center;gap:10px}
 .wc-head .av{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--paper);font-family:var(--display);font-weight:800;font-size:13px;overflow:hidden}
 .wc-head .av.img{background:#ffffff;box-shadow:0 0 0 1.5px var(--ink)}
@@ -531,7 +533,20 @@ html.world .world-hint{display:block}
 
 <script>
 (function(){
-const VIEW = window.HL_VIEW || 'timeline';
+const VIEW = window.HL_VIEW || (location.hash==='#world' ? 'world' : 'timeline');
+// Inside Claude the map opens as a view of this same page (#world), so edit mode and saving work there too.
+if(!window.HL_VIEW){
+  const wb=document.getElementById('worldBtn');
+  if(VIEW==='world'){
+    const h=document.querySelector('.stage-head h2'), sp=document.querySelector('.stage-head p'); if(h) h.dataset.k='head.worldTitle'; if(sp) sp.dataset.k='head.worldSub';
+    if(wb){ wb.href='./'; wb.querySelector('span').textContent='Timeline view'; wb.querySelector('.wtip').textContent='Back to the scrolling timeline'; }
+  }
+  if(wb) wb.addEventListener('click',e=>{
+    if(!(window.claude && typeof window.claude.use==='function')) return; // plain site: follow the link (new tab)
+    e.preventDefault(); location.hash = VIEW==='world' ? '' : 'world';
+  });
+  window.addEventListener('hashchange',()=>{ const want=location.hash==='#world'?'world':'timeline'; if(want!==VIEW) location.reload(); });
+}
 if(VIEW==='world') document.documentElement.classList.add('world');
 const NOW = 2026 + 9.97/12;
 const START = 2011, END = 2027.6;
@@ -1024,7 +1039,6 @@ bSave.addEventListener('click', async ()=>{
 });
 
 async function initEditing(){
-  if(VIEW==='world') return;
   if(!window.claude || typeof window.claude.use!=='function') return;
   try{
     const [art, user] = await Promise.all([window.claude.use('artifact'), window.claude.use('user')]);
@@ -1259,14 +1273,15 @@ function layoutWorld(){
     }
     const node=document.createElement('button'); node.type='button'; node.className='wnode'; node.setAttribute('aria-label', label);
     node.innerHTML=`<span class="wn-num">${st.n}</span>`;
-    node.addEventListener('click',()=>{ if(editing) return; if(wrap.classList.contains('open') && r && r.probes.length){ openFile(ri,node); return; } document.querySelectorAll('.wstop.open').forEach(o=>{ if(o!==wrap) o.classList.remove('open'); }); wrap.classList.toggle('open'); });
+    node.addEventListener('click',()=>{ if(editing){ document.querySelectorAll('.wstop.open').forEach(o=>{ if(o!==wrap) o.classList.remove('open'); }); wrap.classList.toggle('open'); return; } if(wrap.classList.contains('open') && r && r.probes.length){ openFile(ri,node); return; } document.querySelectorAll('.wstop.open').forEach(o=>{ if(o!==wrap) o.classList.remove('open'); }); wrap.classList.toggle('open'); });
     wrap.append(node, card); map.append(wrap);
     // sidebar result row, Google-Maps style
     const li=document.createElement('li'); const row=document.createElement('button'); row.type='button'; row.className='wl-row'+(wrap.classList.contains('cleared')?' cleared':'');
     const num=document.createElement('span'); num.className='wl-num'+(st.bonus?' bonus':''); num.textContent=st.n;
     const txt=document.createElement('span'); txt.className='wl-txt';
-    if(r){ const t1=T('strong',null,'roles.'+ri+'.co'), t2=T('small',null,'roles.'+ri+'.role'); txt.append(t1,t2); }
-    else { txt.append(T('strong',null,'miles.'+st.mile+'.name'), T('small',null,'miles.'+st.mile+'.sub')); }
+    const M=(tag,path)=>{ const e=document.createElement(tag); e.dataset.mirror=path; e.textContent=getP(path)??''; return e; };
+    if(r){ txt.append(M('strong','roles.'+ri+'.co'), M('small','roles.'+ri+'.role')); }
+    else { txt.append(M('strong','miles.'+st.mile+'.name'), M('small','miles.'+st.mile+'.sub')); }
     const right=document.createElement('span'); right.className='wl-meta mono'; right.textContent = r ? (r.probes.length ? `${foundCount(r)}/${r.probes.length}` : (r.kind==='edu'?'Edu':'')) : 'Bonus';
     row.append(num, txt, right);
     row.setAttribute('aria-label', label+'. Show on map.');
@@ -1302,7 +1317,7 @@ if(VIEW==='world'){
   let wheelAcc=0;
   viewport.addEventListener('wheel',e=>{ e.preventDefault(); wheelAcc+=e.deltaY; if(Math.abs(wheelAcc)>60){ const r=viewport.getBoundingClientRect(); worldZoom(wheelAcc<0?1:-1, e.clientX-r.left, e.clientY-r.top); wheelAcc=0; } },{passive:false});
 }
-document.addEventListener('click',e=>{ if(VIEW==='world' && !e.target.closest('.wstop')) document.querySelectorAll('.wstop.open').forEach(o=>o.classList.remove('open')); });
+document.addEventListener('click',e=>{ if(VIEW==='world' && !e.target.closest('.wstop') && !e.target.closest('.edit-bar,.folder-wrap,.scrim')) document.querySelectorAll('.wstop.open').forEach(o=>o.classList.remove('open')); });
 
 applyStatic(); layout(); renderFruits();
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{ if(!document.activeElement || !document.activeElement.isContentEditable) layout(); });
