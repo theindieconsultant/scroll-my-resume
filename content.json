@@ -335,26 +335,20 @@
       "images": {
         "0": [
           {
-            "src": "story-s1-1a.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "The Aroris360 onboarding screen built with Prima DS"
+            "src": "up-7412c6ac41.jpg",
+            "fit": "cover"
           }
         ],
         "1": [
           {
-            "src": "story-s1-2a.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "Prima DS color ramps, data visualization and icon foundations"
+            "src": "up-3e0d7829df.jpg",
+            "fit": "cover"
           }
         ],
         "2": [
           {
-            "src": "story-s1-3a.jpg",
-            "fit": "contain",
-            "bg": "#000000",
-            "alt": "Prima DS components in the Negotiation Strategy screens on laptop and tablet"
+            "src": "up-6c98131da9.jpg",
+            "fit": "cover"
           }
         ]
       }
@@ -400,24 +394,14 @@
       "images": {
         "0": [
           {
-            "src": "story-s2-1a.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "PHI check flagging restricted columns before data cleanup continues"
+            "src": "up-8128db64f2.jpg",
+            "fit": "cover"
           }
         ],
         "1": [
           {
-            "src": "story-s2-2a.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "Human-in-the-loop review of AI-assigned provider credentials"
-          },
-          {
-            "src": "story-s2-2b.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "The Proposal Modeler analyzing contract and market trends"
+            "src": "up-7ce35a4bd0.jpg",
+            "fit": "cover"
           }
         ],
         "2": [
@@ -499,13 +483,7 @@
         ],
         "1": [
           {
-            "src": "story-s4-2b.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "SupplierCare tables built with the component toolkit"
-          },
-          {
-            "src": "story-s4-u2.jpg",
+            "src": "up-cddda67693.jpg",
             "fit": "cover"
           }
         ],
@@ -558,18 +536,14 @@
       "images": {
         "0": [
           {
-            "src": "story-s5-1a.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "The label template build canvas"
+            "src": "up-9d3e6bde6c.jpg",
+            "fit": "cover"
           }
         ],
         "1": [
           {
-            "src": "story-s5-2a.jpg",
-            "fit": "contain",
-            "bg": "#ffffff",
-            "alt": "IOR section formatting panel with size, position and scale controls"
+            "src": "up-288905e87a.jpg",
+            "fit": "cover"
           }
         ],
         "2": [
