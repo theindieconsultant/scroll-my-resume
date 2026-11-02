@@ -189,6 +189,27 @@ p{margin:0}
 @media (max-width:700px){.legend{display:none}.stage-head p{display:none}}
 
 /* ---------- Case file drawer ---------- */
+.win-wrap{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:calc(16px + var(--banner-h,0px)) 16px 16px;background:rgba(15,17,21,.62);opacity:0;transition:opacity .3s}
+.win-wrap[hidden]{display:none}
+.win-wrap.on{opacity:1}
+.win-card{position:relative;width:min(520px,100%);max-height:calc(100svh - 40px);overflow:auto;display:grid;justify-items:center;gap:12px;text-align:center;padding:28px 26px 24px;background:var(--lime);color:#15171d;border:2px solid #15171d;border-radius:22px;box-shadow:6px 6px 0 #15171d,0 40px 80px -30px rgba(0,0,0,.5);transform:translateY(24px) scale(.94);transition:transform .5s cubic-bezier(.2,.9,.2,1.15)}
+.win-wrap.on .win-card{transform:none}
+.win-card .x{position:absolute;top:14px;right:14px;width:40px;height:40px;border-color:#15171d;color:#15171d;background:transparent}
+.win-card .x:hover{background:#15171d;color:var(--lime)}
+.win-trophy svg{display:block;width:90px;height:90px;image-rendering:pixelated}
+.win-wrap.on .win-trophy svg{animation:fruitPop .8s .15s both cubic-bezier(.2,.9,.3,1.5)}
+.win-card h2{margin:0;font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:clamp(24px,3.4vw,32px);line-height:1.1;letter-spacing:-.02em}
+.win-sub{margin:0;font-size:16px;line-height:1.5;max-width:44ch}
+.win-sub a{color:inherit;font-weight:700;text-underline-offset:3px}
+.win-form{width:100%;display:grid;gap:8px;margin-top:4px}
+.win-form textarea,.win-form input{width:100%;font:inherit;font-size:15px;color:#15171d;background:#ffffff;border:1.5px solid #15171d;border-radius:12px;padding:10px 12px;resize:vertical}
+.win-row{display:flex;gap:8px}
+.win-row input{flex:1;min-width:0}
+.win-send{flex:none;font:inherit;font-weight:700;font-size:15px;padding:0 18px;border-radius:999px;border:1.5px solid #15171d;background:#15171d;color:var(--lime);cursor:pointer}
+.win-send:hover{background:#000}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:480px){.win-row{flex-direction:column}.win-send{min-height:44px}}
+@media (prefers-reduced-motion:reduce){.win-card{transition:none}.win-wrap.on .win-trophy svg{animation:none}}
 .scrim{position:fixed;inset:0;background:var(--scrim);z-index:40;opacity:0;transition:opacity .3s}
 .scrim.on{opacity:1}
 .file{position:fixed;top:0;right:0;bottom:0;width:min(640px,100%);z-index:41;background:var(--sheet);color:var(--ink);overflow-y:auto;overscroll-behavior:contain;
@@ -402,7 +423,7 @@ html.world .scorecard .fruit{width:31px;height:36px}
 html.world .scorecard .fruit svg{width:24px;height:24px}
 html.world .scorecard .fruit.bonus{margin-left:9px}
 .wh-row h2{max-width:none!important}
-html.world .scorecard .fruits{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) auto;column-gap:2px;row-gap:16px;justify-items:center;align-items:center;margin:8px 0 0;padding-bottom:18px}
+html.world .scorecard .fruits{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));column-gap:6px;row-gap:16px;justify-items:center;align-items:center;margin:8px 0 0;padding-bottom:24px}
 html.world .scorecard .fruit{width:100%;max-width:44px;height:38px}
 html.world .scorecard .fruit svg{width:26px;height:26px}
 html.world .scorecard .fruit.bonus{grid-column:6;grid-row:1 / span 2;margin-left:12px;width:44px;height:100%}
@@ -593,6 +614,23 @@ html.world .world-hint{display:block}
     <div class="pc-photo" id="pcPhoto"></div>
     <div class="hold" id="pcHold" role="button" tabindex="0"><span class="fill"></span><span class="t" data-k="ui.hold">Press and hold to reveal</span></div>
     <a class="pc-link" id="pcLink" target="_blank" rel="noopener">Watch on Instagram ↗</a>
+  </div>
+</div>
+<div class="win-wrap" id="winWrap" hidden>
+  <div class="win-card" id="winCard" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+    <button class="x" id="winClose" type="button" aria-label="Close"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.8" fill="none"/></svg></button>
+    <div class="win-trophy" id="winTrophy" aria-hidden="true"></div>
+    <h2 id="winTitle">Congrats, you won 20,000 points!</h2>
+    <p class="win-sub">Thank you for playing and learning more about my work. Email me at <a href="mailto:heatherlee.ux@gmail.com">heatherlee.ux@gmail.com</a> to schedule an interview. Or leave a comment in the box below, and I’ll get back to you in 72 hours.</p>
+    <form class="win-form" id="winForm">
+      <label class="sr" for="winMsg">Your comment</label>
+      <textarea id="winMsg" rows="3" placeholder="Leave a comment…" required></textarea>
+      <div class="win-row">
+        <label class="sr" for="winFrom">Your email</label>
+        <input id="winFrom" type="email" placeholder="Your email (so I can reply)" autocomplete="email">
+        <button type="submit" class="win-send">Send</button>
+      </div>
+    </form>
   </div>
 </div>
 <div class="folder-wrap" id="folderWrap" hidden>
@@ -1112,9 +1150,25 @@ function openFile(i, from, clientIdx){
   document.body.style.overflow='hidden';
   setTimeout(()=>document.getElementById('fClose').focus({preventScroll:true}), 60);
 }
+function showWin(){
+  const w=document.getElementById('winWrap'); if(!w || !w.hidden) return;
+  document.getElementById('winTrophy').innerHTML=spriteSVG('trophy',90);
+  w.hidden=false; requestAnimationFrame(()=>w.classList.add('on')); document.body.style.overflow='hidden';
+  setTimeout(()=>document.getElementById('winClose').focus({preventScroll:true}),60);
+}
+function hideWin(){ const w=document.getElementById('winWrap'); w.classList.remove('on'); document.body.style.overflow=''; setTimeout(()=>{ w.hidden=true; },320); }
+document.getElementById('winClose').addEventListener('click', hideWin);
+document.getElementById('winWrap').addEventListener('click', e=>{ if(e.target.id==='winWrap') hideWin(); });
+document.getElementById('winWrap').addEventListener('keydown', e=>{ if(e.key==='Escape') hideWin(); });
+document.getElementById('winForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const msg=document.getElementById('winMsg').value.trim(), from=document.getElementById('winFrom').value.trim(); if(!msg) return;
+  const body=msg+(from?'\n\nReply to: '+from:'');
+  window.open('mailto:heatherlee.ux@gmail.com?subject='+encodeURIComponent('Hello from your interactive resume')+'&body='+encodeURIComponent(body), '_blank');
+});
 function closeFile(){
   if(curRole>-1 && VIEW==='world'){ const rr=C.roles[curRole]; const fresh = rr && !gWasEarned && isEarned(rr); setTimeout(()=>{ WFLAG = fresh ? rr.id : null; layoutWorld(); WFLAG=null; }, 420); }
-  if(curRole>-1){ const r=C.roles[curRole]; if(r && !gWasEarned && isEarned(r)){ const all=caseFiles().every(o=>isEarned(o.r)); setTimeout(()=>{ renderFruits(r.id); if(all) setTimeout(()=>renderFruits('trophy'), 800); }, 380); } gWasEarned=false; }
+  if(curRole>-1){ const r=C.roles[curRole]; if(r && !gWasEarned && isEarned(r)){ const all=caseFiles().every(o=>isEarned(o.r)); setTimeout(()=>{ renderFruits(r.id); if(all){ if(VIEW==='world') setTimeout(showWin, 1100); else setTimeout(()=>renderFruits('trophy'), 800); } }, 380); } gWasEarned=false; }
   scrim.classList.remove('on'); file.classList.remove('on'); folderWrap.classList.remove('on'); photoWrap.classList.remove('on');
   document.documentElement.classList.remove('file-open','folder-open');
   document.body.style.overflow='';
@@ -1289,8 +1343,9 @@ const SPRITES={
 const FRUIT_POINTS={cherry:100,strawberry:300,orange:500,apple:700,melon:1000,pear:1200,lemon:1500,grapes:2000,bell:3000,key:5000,trophy:7400};
 const FRUIT_NAMES={trophy:'Trophy',cherry:'Cherries',strawberry:'Strawberry',orange:'Orange',apple:'Apple',melon:'Melon',pear:'Pear',lemon:'Lemon',grapes:'Grapes',bell:'Bell',key:'Key'};
 const FRUIT_ORDER = VIEW==='world' ? ['cherry','strawberry','orange','apple','melon','pear','lemon','grapes','bell','key'] : ['cherry','strawberry','orange','apple','melon','grapes','bell','key'];
-// every page adds up to 20,000: the trophy bonus is whatever the fruit leave over
-FRUIT_POINTS.trophy = 20000 - FRUIT_ORDER.reduce((a,f)=>a+FRUIT_POINTS[f],0);
+// every page adds up to 20,000. Map: the ten fruit alone. Timeline: fruit plus a trophy bonus.
+if(VIEW==='world') Object.assign(FRUIT_POINTS,{cherry:200,strawberry:400,orange:600,apple:800,melon:1000,pear:1500,lemon:2000,grapes:3000,bell:4500,key:6000});
+FRUIT_POINTS.trophy = VIEW==='world' ? 0 : 20000 - FRUIT_ORDER.reduce((a,f)=>a+FRUIT_POINTS[f],0);
 function spriteSVG(name, px){
   const g=SPRITES[name]; let rects='';
   g.forEach((row,y)=>{ let x=0; while(x<row.length){ const c=row[x]; if(c==='.'){x++;continue;} let w=1; while(row[x+w]===c) w++; rects+=`<rect x="${x}" y="${y}" width="${w}" height="1" fill="${PAL[c]}"/>`; x+=w; } });
@@ -1328,14 +1383,16 @@ function renderFruits(justEarned){
     b.addEventListener('click', ()=>openFile(i, b));
     fruitRow.append(b);
   });
-  // bonus trophy: earned once every fruit is filled in
+  // bonus trophy: earned once every fruit is filled in (timeline only; the map shows a win popup instead)
   const files=caseFiles(), all=files.length>0 && files.every(({r})=>isEarned(r));
+  if(VIEW!=='world'){
   const t=document.createElement('button'); t.type='button'; t.className='fruit bonus'+(all?' earned':'')+(justEarned==='trophy'?' pop':'');
   t.innerHTML=spriteSVG('trophy', 30);
   t.setAttribute('aria-label', `Trophy, ${FRUIT_POINTS.trophy.toLocaleString('en-US')} bonus points. ${all?'Earned':'Earn every fruit to win it'}.`);
   const tt=document.createElement('span'); tt.className='ftip'; tt.textContent=`Trophy · ${FRUIT_POINTS.trophy.toLocaleString('en-US')} pts bonus`; t.append(tt);
   if(all){ const tag=document.createElement('span'); tag.className='fpts'; tag.textContent=FRUIT_POINTS.trophy.toLocaleString('en-US'); t.append(tag); }
   fruitRow.append(t);
+  }
   const sv=document.getElementById('scoreVal');
   if(sv){ let pts=0; files.forEach(({r},k)=>{ if(isEarned(r)) pts+=FRUIT_POINTS[FRUIT_ORDER[k % FRUIT_ORDER.length]]; }); if(all) pts+=FRUIT_POINTS.trophy;
     const max=files.reduce((a,_,k)=>a+FRUIT_POINTS[FRUIT_ORDER[k % FRUIT_ORDER.length]],0)+FRUIT_POINTS.trophy;
