@@ -903,7 +903,6 @@
     {
       "id": "vb",
       "story": true,
-      "kind": "video",
       "lane": 0,
       "s": 2025.5,
       "e": 2025.6,
@@ -915,12 +914,13 @@
       "org": "Village Back",
       "lede": "First place in the Village Back 90-second pitch competition.",
       "label": "Village Back - First Place Pitch Winner",
-      "video": "https://www.instagram.com/p/DMk6uVpOSUN9lew_8K0-px5X3WMblZH06P2_4A0/embed/",
       "link": "https://www.instagram.com/p/DMk6uVpOSUN9lew_8K0-px5X3WMblZH06P2_4A0/",
       "linkText": "View on Instagram",
-      "cta": "View post",
       "metric": null,
-      "probes": []
+      "probes": [],
+      "photo": "village-back-check.jpg",
+      "bonus": true,
+      "alt": "Heatherlee holding a $1,000 City of Lakes Rotary Club Entrepreneurship Award check"
     }
   ],
   "nodes": [
