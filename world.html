@@ -207,6 +207,12 @@ p{margin:0}
 .win-row input{flex:1;min-width:0}
 .win-send{flex:none;font:inherit;font-weight:700;font-size:15px;padding:0 18px;border-radius:999px;border:1.5px solid #15171d;background:#15171d;color:var(--lime);cursor:pointer}
 .win-send:hover{background:#000}
+.win-send:disabled{opacity:.5;cursor:progress}
+.win-status{margin:0;min-height:1.2em;font-size:13px;color:#2b2f14}
+.win-status.err{color:#7a1c10;font-weight:600}
+.win-thanks{display:grid;gap:4px;justify-items:center;padding:10px 0 4px}
+.win-thanks[hidden]{display:none}
+.win-thanks b{font-family:"Bricolage Grotesque",sans-serif;font-size:24px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (max-width:480px){.win-row{flex-direction:column}.win-send{min-height:44px}}
 @media (prefers-reduced-motion:reduce){.win-card{transition:none}.win-wrap.on .win-trophy svg{animation:none}}
@@ -628,9 +634,12 @@ html.world .world-hint{display:block}
       <div class="win-row">
         <label class="sr" for="winFrom">Your email</label>
         <input id="winFrom" type="email" placeholder="Your email (so I can reply)" autocomplete="email">
-        <button type="submit" class="win-send">Send</button>
+        <button type="submit" class="win-send" id="winSend">Send</button>
       </div>
+      <input type="text" id="winHoney" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="sr">
+      <p class="win-status" id="winStatus" role="status" aria-live="polite"></p>
     </form>
+    <div class="win-thanks" id="winThanks" hidden><b>Thank you!</b><span>Your note is on its way. I’ll get back to you within 72 hours.</span></div>
   </div>
 </div>
 <div class="folder-wrap" id="folderWrap" hidden>
@@ -1161,12 +1170,34 @@ function hideWin(){ const w=document.getElementById('winWrap'); w.classList.remo
 document.getElementById('winClose').addEventListener('click', hideWin);
 document.getElementById('winWrap').addEventListener('click', e=>{ if(e.target.id==='winWrap') hideWin(); });
 document.getElementById('winWrap').addEventListener('keydown', e=>{ if(e.key==='Escape') hideWin(); });
-document.getElementById('winForm').addEventListener('submit', e=>{
-  e.preventDefault();
-  const msg=document.getElementById('winMsg').value.trim(), from=document.getElementById('winFrom').value.trim(); if(!msg) return;
-  const body=msg+(from?'\n\nReply to: '+from:'');
-  window.open('mailto:heatherlee.ux@gmail.com?subject='+encodeURIComponent('Hello from your interactive resume')+'&body='+encodeURIComponent(body), '_blank');
-});
+// comments go straight to Heatherlee's inbox, the same way as the Deck Room (Web3Forms first, FormSubmit as a backup)
+(()=>{
+  const OWNER='heatherlee.ux@gmail.com', WEB3FORMS_KEY='b2dfd716-47fa-441c-a398-9f88b500eca4', FORMSUBMIT_URL='https://formsubmit.co/ajax/14c595c1a33a71241917fef95e431b03';
+  const form=document.getElementById('winForm'), st=document.getElementById('winStatus'), btn=document.getElementById('winSend');
+  const say2=(t,err)=>{ st.textContent=t; st.className='win-status'+(err?' err':''); };
+  let busy=false;
+  form.addEventListener('submit', async e=>{
+    e.preventDefault(); if(busy) return;
+    const msg=document.getElementById('winMsg').value.trim(), from=document.getElementById('winFrom').value.trim();
+    if(!msg){ say2('Write a comment first.', true); return; }
+    if(document.getElementById('winHoney').value){ hideWin(); return; }
+    busy=true; btn.disabled=true; say2('Sending…');
+    const fields={'Comment':msg,'Reply to':from||'(no email given)','Sent from':location.href.split('#')[0]+' (resume game, all levels cleared)','Sent at':new Date().toLocaleString()};
+    const services=[{url:'https://api.web3forms.com/submit', extra:{access_key:WEB3FORMS_KEY, subject:'Someone finished your resume game', from_name:'Heatherlee’s resume game', ...(from?{replyto:from}:{})}},
+                    {url:FORMSUBMIT_URL, extra:{_subject:'Someone finished your resume game', _template:'box', _captcha:'false', ...(from?{_replyto:from}:{})}}];
+    let lastErr;
+    for(const svc of services){
+      const fd=new FormData(); Object.entries(svc.extra).forEach(([k,v])=>fd.append(k,v)); Object.entries(fields).forEach(([k,v])=>fd.append(k,v));
+      const ctl=new AbortController(), tm=setTimeout(()=>ctl.abort(),12000);
+      try{ const r=await fetch(svc.url,{method:'POST',headers:{'Accept':'application/json'},body:fd,signal:ctl.signal}); const d=await r.json().catch(()=>({}));
+        if(!r.ok || String(d.success)!=='true') throw new Error(d.message||('HTTP '+r.status)); lastErr=null; break; }
+      catch(err){ lastErr=err; } finally{ clearTimeout(tm); }
+    }
+    busy=false; btn.disabled=false;
+    if(lastErr){ say2(`Couldn’t send. Email ${OWNER}`, true); return; }
+    say2(''); form.hidden=true; document.getElementById('winThanks').hidden=false;
+  });
+})();
 function closeFile(){
   if(curRole>-1 && VIEW==='world'){ const rr=C.roles[curRole]; const fresh = rr && !gWasEarned && isEarned(rr); setTimeout(()=>{ WFLAG = fresh ? rr.id : null; layoutWorld(); WFLAG=null; }, 420); }
   if(curRole>-1){ const r=C.roles[curRole]; if(r && !gWasEarned && isEarned(r)){ const all=caseFiles().every(o=>isEarned(o.r)); setTimeout(()=>{ renderFruits(r.id); if(all){ if(VIEW==='world') setTimeout(showWin, 1100); else setTimeout(()=>renderFruits('trophy'), 800); } }, 380); } gWasEarned=false; }
