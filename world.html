@@ -141,7 +141,7 @@ p{margin:0}
 .role.static .lbl{pointer-events:auto}
 .role.static:hover .av,.role.static .av{background:#2b2b2b;color:#ffffff;box-shadow:none}
 /* education: outlined, dotted bar instead of a solid role bar */
-.role.edu{cursor:default}
+.role.edu{cursor:pointer}
 .role.edu .pill{background:var(--paper-2);box-shadow:inset 0 0 0 2px var(--ink);
   background-image:radial-gradient(circle,var(--ink) 1.3px,transparent 1.6px);background-size:9px 9px;background-position:3px 50%}
 .role.edu .pill::after{background:var(--lime)}
@@ -293,6 +293,9 @@ p{margin:0}
 .f-vault .hold{margin-top:12px;min-height:46px;border-color:var(--folder-ink);color:var(--folder-ink)}
 .f-vault .hold .fill{background:#ffffff}
 .f-vault.open .hold{display:none}
+.vault-photo{margin-top:8px;height:clamp(180px,34vh,320px);border-radius:10px;overflow:hidden;background:#15171d}
+.vault-photo img{display:block;width:100%;height:100%;max-width:100%;object-fit:contain;filter:blur(18px) saturate(.6);transform:scale(1.08);transition:filter .6s,transform .6s}
+.f-vault.open .vault-photo img{filter:none;transform:none}
 .f-vault.open .vault-num,.f-vault.open .vault-cap{filter:none;opacity:1;user-select:auto}
 .f-q{grid-column:1/-1;font-size:clamp(24px,3.6vh,34px);line-height:1.05;letter-spacing:-.02em;font-variation-settings:"wdth" 88}
 .f-a{grid-column:1/-1;font-size:clamp(17px,2.3vh,21px);line-height:1.5;max-width:52ch}
@@ -574,7 +577,7 @@ const d = (y,m)=> +(y + (m-1)/12).toFixed(4);
 const DEFAULT = {
  v:1,
  head:{worldTitle:"Welcome to my world! Pick a level, peek at the role, then open its case file.", worldSub:"Clear every post-it in a level to light it up and earn its fruit.", banner:"Welcome to Heatherlee’s interactive timeline game. Learn more, find fruit, have fun!", wip:"----- 🚧 --- WORK IN PROGRESS --- 🚧 -----", title:"Scroll, drag or use the arrow keys to move through the years. Open any bar to dig in.", sub:"Each role is a case file. The details are there for whoever goes looking."},
- ui:{education:"Education", legendEdu:"Education", postit:"Post-it", overview:"Overview", foundPosts:"found post-its", tabsHint:"Open the tabs to learn more", hint:"Drag to pan, or use", legendRole:"Role", legendClient:"Client engagement", legendMilestone:"Milestone",
+ ui:{photoLabel:"Then & now", education:"Education", legendEdu:"Education", postit:"Post-it", overview:"Overview", foundPosts:"found post-its", tabsHint:"Open the tabs to learn more", hint:"Drag to pan, or use", legendRole:"Role", legendClient:"Client engagement", legendMilestone:"Milestone",
      openFile:"Open file", headline:"The headline result", hold:"Press and hold to reveal",
      ask:"Ask about it", pick:"Pick a client", done:"You found everything in this file. Ask me about it in person.", uncovered:"uncovered"},
  edu:{label:"Milestone:", text:"Minneapolis College of Art & Design"},
@@ -644,7 +647,7 @@ const DEFAULT = {
      ["Securian Financial, 2018","As UX Lead, led the redesign of call center software for policyholder claims and payments."]]}
 ,
   {id:"mcad", kind:"edu", lane:1, s:2011.0, e:2011.9, thin:true, av:"M", co:"MCAD", role:"BFA, Design & Entrepreneurial Studies", dates:"2007 – 2011",
-   title:"BFA, Design and Entrepreneurial Studies", org:"Minneapolis College of Art & Design", lede:"", metric:null, probes:[]}
+   title:"BFA, Design and Entrepreneurial Studies", org:"Minneapolis College of Art & Design", lede:"Graduated from MCAD in 2014, three years late and pregnant with baby #2. Back at MCAD in June 2025 for the State of Black Design Conference.", photo:"mcad-grad.jpg", metric:null, probes:[]}
  ],
  nodes:[
   {t:d(2012,7), name:"Best Buy", sub:"UX Researcher, 2013", probe:0},
@@ -710,7 +713,7 @@ function layout(){
     if(!isStatic) b.setAttribute('aria-label', `${r.co}, ${r.role}, ${r.dates}. Open case file.`);
     b.dataset.lane=r.lane;
     if(isStatic) b.classList.add('static');
-    if(isEdu){ b.classList.add('edu'); b.removeAttribute('role'); b.removeAttribute('tabindex'); b.setAttribute('aria-label', `${r.co}, ${r.role}, ${r.dates}. Education.`); }
+    if(isEdu){ b.classList.add('edu'); b.setAttribute('aria-label', `${r.co}, ${r.role}, ${r.dates}. Education. Open case file.`); }
     const lbl=T('span','lbl');
     const av=T('span','av'+(r.logo?' logo':'')); av.setAttribute('aria-hidden','true');
     const li=LOGO_IMG[r.id];
@@ -720,8 +723,8 @@ function layout(){
     const lt=T('span','lt'); lt.append(T('strong',null,P+'co'), T('small',null,P+'role'));
     lbl.append(av, lt);
     const pill=T('span','pill');
-    const peek=T('span','peek'); peek.append(T('span',null,P+'dates'), T('em',null, isEdu ? 'ui.education' : 'ui.openFile'));
-    if(isStatic) b.append(lbl,pill); else if(isEdu) b.append(lbl,pill,peek); else { b.append(lbl,pill,peek); activate(b, ()=>openFile(i, b)); }
+    const peek=T('span','peek'); peek.append(T('span',null,P+'dates'), T('em',null, 'ui.openFile'));
+    if(isStatic) b.append(lbl,pill); else { b.append(lbl,pill,peek); activate(b, ()=>openFile(i, b)); }
     track.appendChild(b);
   });
   const ci = C.roles.findIndex(r=>r.clients);
@@ -901,9 +904,18 @@ function fillFolder(animate){
   const pane=document.createElement('div'); pane.className='f-pane'+(animate?' anim':''); pane.id='gpane'; pane.setAttribute('role','tabpanel'); pane.setAttribute('aria-labelledby','gtab'+gTab);
   if(gTab===0){
     const left=document.createElement('div'); left.style.display='grid'; left.style.gap='12px'; left.style.alignContent='start';
-    left.append(T('p','f-lede2',P+'lede'), T('p','mono',null)); left.lastChild.style.opacity='.7'; left.lastChild.dataset.k='ui.tabsHint'; left.lastChild.textContent=C.ui.tabsHint; if(editing) makeEditable(left.lastChild);
+    left.append(T('p','f-lede2',P+'lede'), T('p','mono',null)); left.lastChild.style.opacity='.7'; left.lastChild.dataset.k='ui.tabsHint'; left.lastChild.textContent=C.ui.tabsHint; if(editing) makeEditable(left.lastChild); if(!r.probes.length) left.lastChild.remove();
     pane.append(left);
-    if(!r.metric) pane.classList.add('solo');
+    if(!r.metric && !r.photo) pane.classList.add('solo');
+    if(!r.metric && r.photo){
+      const v=document.createElement('div'); v.className='f-vault photo'+((gVaultOpen||editing)?' open':'');
+      const ph=document.createElement('div'); ph.className='vault-photo'; const im=document.createElement('img'); im.src=r.photo; im.alt='MCAD graduation in 2014 and the State of Black Design Conference at MCAD in 2025'; ph.append(im);
+      v.append(T('span','mono','ui.photoLabel'), ph);
+      const h=document.createElement('div'); h.className='hold'; h.setAttribute('role','button'); h.tabIndex=0;
+      h.append(T('span','fill'), T('span','t','ui.hold')); v.append(h);
+      bindHold(h, v, ()=>{ gVaultOpen=true; if(!editing && !ovDone(r)){ markOverview(i); gPop=0; renderFoot(); } });
+      pane.append(v);
+    }
     if(r.metric){
       const v=document.createElement('div'); v.className='f-vault'+((gVaultOpen||editing)?' open':'');
       v.append(T('span','mono','ui.headline'), T('div','vault-num',P+'metric.v'), T('p','vault-cap',P+'metric.c'));
@@ -939,6 +951,7 @@ function fillFolder(animate){
   gStage.append(pane);
   renderFoot();
   gPrev.disabled = gTab===0; gNext.disabled = gTab===labels.length-1;
+  gPrev.parentElement.hidden = labels.length<2;
 }
 function renderFoot(){
   const i=curRole, r=C.roles[i]; if(!r) return; const labels=[0].concat(r.probes.map((_,j)=>j));
@@ -964,7 +977,7 @@ function openFolder(i, from, clientIdx){
   lastFocus=from; curRole=i; gTab=0; gVaultOpen=false;
   gSeen=new Set((FOUND[C.roles[i].id]||[]).filter(j=>j<C.roles[i].probes.length).map(j=>j+1));
   gPop=-1; gWasEarned=isEarned(C.roles[i]);
-  if(!C.roles[i].metric && !editing && !ovDone(C.roles[i])){ markOverview(i); gPop=0; }
+  if(!C.roles[i].metric && !C.roles[i].photo && !editing && !ovDone(C.roles[i])){ markOverview(i); gPop=0; }
   if(clientIdx!=null && C.roles[i].probes[clientIdx]){ gTab=clientIdx+1; gSeen.add(gTab); markFound(i, clientIdx); }
   fillFolder(false);
   document.documentElement.classList.add('folder-open');
@@ -1141,7 +1154,7 @@ async function loadContent(){
   }catch(_){}
 }
 // ---------- Fruit row: one pixel fruit per case file, earned when all its post-its are found ----------
-const PAL={R:'#e8312f',r:'#a51c1c',W:'#ffffff',g:'#1f7a2a',G:'#2f9e3a',L:'#8fd65a',B:'#8a4b1f',O:'#f39221',o:'#c4650c',Y:'#f7d531',y:'#c99a0d',K:'#7cc4ef',k:'#3a7fb5'};
+const PAL={P:'#9b5de5',p:'#6a3aa8',R:'#e8312f',r:'#a51c1c',W:'#ffffff',g:'#1f7a2a',G:'#2f9e3a',L:'#8fd65a',B:'#8a4b1f',O:'#f39221',o:'#c4650c',Y:'#f7d531',y:'#c99a0d',K:'#7cc4ef',k:'#3a7fb5'};
 const SPRITES={
  cherry:["........gg..",".......ggBg.","......B..B..",".....B...B..","....B....B..","...B.....B..",".RRBR..RRBR.","RWRRRR.WRRRR","RRRRRR.RRRRR","RRRRrr.RRRrr",".RRrr...RRr.","............"],
  strawberry:["....gggg....","...gGGGGg...","..RRgGGgRR..",".RRRRRRRRRR.",".RWRRRWRRWR.",".RRRRRRRRRR.","..RRWRRRWRR.","..RRRRRRRRr.","...RRWRRRr..","....RRRRr...",".....RRr....","......r....."],
@@ -1150,11 +1163,12 @@ const SPRITES={
  melon:[".....Bg.....","...LLLLLL...","..LGLLGLLL..",".LLGLLGLLGL.",".LGLLGLLGLL.",".LGLLGLLGLL.",".LLGLLGLLGL.",".LLGLLGLLGL.","..LGLLGLLG..","...LLGLLL...","............","............"],
  bell:[".....yy.....","....YYYY....","...YYYYYY...","...YWYYYYy..","..YYWYYYYy..","..YWYYYYYy..","..YYYYYYYy..",".YYYYYYYYYy.","YYYYYYYYYYyy","yyyyyyyyyyyy",".....WW.....","............"],
  trophy:["..YYYYYYYY..","YYYWYYYYYyYY","Y.YWYYYYYy.Y","Y.YWYYYYYy.Y",".YYWYYYYYyY.","...YYYYYy...","....YYyy....",".....Yy.....",".....Yy.....","....YYYy....","...BBBBBB...","...BBBBBB..."],
+ grapes:["......gB....",".....gB.....","...PPpPP....","..PPpPPpP...","..PpPPpPP...","...PPpPPp...","...PpPPp....","....PPpP....","....PpP.....",".....Pp.....","............","............"],
  key:["....KKKK....","...KkKKkK...","...KK..KK...","...KkKKkK...","....KKKK....",".....KK.....",".....KK.....",".....KKKK...",".....KK.....",".....KKK....",".....KK.....","............"]
 };
-const FRUIT_POINTS={cherry:100,strawberry:300,orange:500,apple:700,melon:1000,bell:3000,key:7000,trophy:7400};
-const FRUIT_NAMES={trophy:'Trophy',cherry:'Cherries',strawberry:'Strawberry',orange:'Orange',apple:'Apple',melon:'Melon',bell:'Bell',key:'Key'};
-const FRUIT_ORDER=['cherry','strawberry','orange','apple','melon','bell','key'];
+const FRUIT_POINTS={cherry:100,strawberry:300,orange:500,apple:700,melon:1000,grapes:2000,bell:3000,key:5000,trophy:7400};
+const FRUIT_NAMES={trophy:'Trophy',cherry:'Cherries',strawberry:'Strawberry',orange:'Orange',apple:'Apple',melon:'Melon',grapes:'Grapes',bell:'Bell',key:'Key'};
+const FRUIT_ORDER=['cherry','strawberry','orange','apple','melon','grapes','bell','key'];
 function spriteSVG(name, px){
   const g=SPRITES[name]; let rects='';
   g.forEach((row,y)=>{ let x=0; while(x<row.length){ const c=row[x]; if(c==='.'){x++;continue;} let w=1; while(row[x+w]===c) w++; rects+=`<rect x="${x}" y="${y}" width="${w}" height="1" fill="${PAL[c]}"/>`; x+=w; } });
@@ -1164,13 +1178,13 @@ const FKEY='hl-timeline-found';
 let FOUND={}; try{ FOUND=JSON.parse(localStorage.getItem(FKEY)||'{}')||{}; }catch(_){ FOUND={}; }
 function saveFound(){ try{ localStorage.setItem(FKEY, JSON.stringify(FOUND)); }catch(_){} }
 function caseFiles(){ // roles with post-its, in timeline order
-  return C.roles.map((r,i)=>({r,i})).filter(o=>o.r.probes && o.r.probes.length).sort((a,b)=>a.r.s-b.r.s);
+  return C.roles.map((r,i)=>({r,i})).filter(o=>(o.r.probes && o.r.probes.length) || o.r.photo).sort((a,b)=>a.r.s-b.r.s);
 }
 function fruitFor(roleIdx){ const list=caseFiles(); const k=list.findIndex(o=>o.i===roleIdx); return k<0?null:FRUIT_ORDER[k % FRUIT_ORDER.length]; }
 function foundCount(r){ return (FOUND[r.id]||[]).filter(j=>j < r.probes.length).length; }
 function ovDone(r){ return !!FOUND['ov:'+r.id]; }
 function markOverview(roleIdx){ const r=C.roles[roleIdx]; if(!r) return; FOUND['ov:'+r.id]=1; saveFound(); if(VIEW==='world') layoutWorld(); }
-function isEarned(r){ return r.probes.length>0 && foundCount(r)>=r.probes.length && ovDone(r); }
+function isEarned(r){ if(!r.probes.length && !r.photo) return false; return foundCount(r)>=r.probes.length && ovDone(r); }
 function markFound(roleIdx, j){
   const r=C.roles[roleIdx]; if(!r) return;
   const had=isEarned(r);
@@ -1338,8 +1352,9 @@ function layoutWorld(){
       const meta=document.createElement('div'); meta.className='wc-meta'; meta.append(T('span','wc-dates',P+'dates'));
       if(r.probes.length){ const f=T('span','wc-found'); f.textContent=`${foundCount(r)}/${r.probes.length} post-its`; meta.append(f); }
       else if(r.kind==='edu'){ meta.append(T('span','wc-found','ui.education')); }
+      if(isEarned(r)) wrap.classList.add('cleared');
       card.append(meta);
-      if(r.probes.length){ const ob=document.createElement('button'); ob.type='button'; ob.className='wc-open'; ob.append(T('span',null,'ui.openFile')); ob.insertAdjacentHTML('beforeend','<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'); ob.addEventListener('click',e=>{ e.stopPropagation(); openFile(ri, node); }); card.append(ob); }
+      if(r.probes.length || r.photo){ const ob=document.createElement('button'); ob.type='button'; ob.className='wc-open'; ob.append(T('span',null,'ui.openFile')); ob.insertAdjacentHTML('beforeend','<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'); ob.addEventListener('click',e=>{ e.stopPropagation(); openFile(ri, node); }); card.append(ob); }
       label=`Level ${st.n}: ${r.co}, ${r.role}, ${r.dates}`;
       if(isEarned(r)) wrap.classList.add('cleared');
       if(r.current) wrap.classList.add('current');
