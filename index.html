@@ -689,6 +689,58 @@ html.world .world-hint{display:block}
 .wc-open:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
 @media (prefers-reduced-motion:reduce){.wstop.current .wnode::after{animation:none}}
 
+
+/* ---------- Switch view menu (map view) ---------- */
+.sw-wrap{position:relative;pointer-events:auto;flex:none}
+.sw-wrap .world-btn{cursor:pointer}
+.sw-menu{position:absolute;left:0;top:calc(100% + 10px);z-index:40;min-width:220px;display:grid;gap:4px;padding:6px;background:var(--sheet);color:var(--ink);border:2px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 var(--ink)}
+.sw-menu[hidden]{display:none}
+.sw-menu a{display:grid;grid-template-columns:28px 1fr;align-items:center;column-gap:10px;min-height:48px;padding:6px 10px;border-radius:9px;color:inherit;text-decoration:none;font-weight:600;font-size:15px}
+.sw-menu a small{grid-column:2;font-weight:400;font-size:12px;color:var(--ink-3);margin-top:-2px}
+.sw-menu a svg{grid-row:1/3}
+.sw-menu a:hover,.sw-menu a:focus-visible{background:color-mix(in srgb,var(--lime) 55%,transparent);outline:none;box-shadow:none}
+.sw-menu .cur{opacity:.55;pointer-events:none}
+
+/* ---------- Map view on phones: header, compact score strip, big map, floating Switch View ---------- */
+@media (max-width:760px){
+  html.world{--black-h:76px}
+  html.world .gb-back{display:none}
+  html.world .gb-main{padding-left:88px!important;padding-right:16px;justify-content:center;font-size:clamp(17px,5vw,21px)!important;line-height:1.15}
+  html.world .topbar{z-index:26;padding-top:0}
+  html.world .topbar .wrap{display:block;width:100%;padding:0}
+  html.world .topbar .mark{position:fixed;left:max(18px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + (var(--black-h) - 48px)/2);color:#ffffff}
+  html.world .topbar .mark svg{width:46px}
+  html.world .av-btn,html.world .topbar .replay{position:fixed;top:calc(var(--banner-h) + env(safe-area-inset-top,0px) + 12px);z-index:26}
+  html.world .av-btn{right:68px;background:#15171d;color:#ffffff;border-color:#ffffff;box-shadow:3px 3px 0 #ffffff}
+  html.world .av-btn.picked{background:#e4e1da}
+  html.world .topbar .replay{right:12px;color:#b9b6ae;opacity:1}
+  html.world .av-btn .atip{left:auto;right:0;transform:translateY(-4px)}
+  html.world .av-btn:hover .atip,html.world .av-btn:focus-visible .atip{transform:none}
+  html.world .replay .rtip{right:0}
+  html.world .sw-wrap{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:27}
+  html.world .sw-wrap .world-btn{min-height:48px;padding:0 18px;font-size:16px}
+  html.world .sw-wrap .wtip{display:none}
+  html.world .sw-menu{top:auto;bottom:calc(100% + 10px)}
+  html.world .stage{grid-template-rows:auto minmax(0,1fr)}
+  html.world .stage-head{max-height:none;overflow:visible;gap:0;padding:calc(var(--banner-h) + env(safe-area-inset-top,0px) + 12px) 0 0;background:#15171d;border-bottom:0}
+  html.world .stage-head .wh-row{padding:0 132px 14px max(16px,env(safe-area-inset-left,0px));min-height:56px;align-items:center}
+  html.world .stage-head h2{color:#d9d6cf;font-size:17px;line-height:1.25}
+  html.world .scorecard{margin:0;border:0;border-radius:0;box-shadow:none;padding:8px 16px 7px;display:flex;align-items:center;gap:10px;border-bottom:1.5px dashed #bdb8ad}
+  html.world .scorecard .sc-top{display:contents}
+  html.world .scorecard .sc-label{order:1;flex:none;font-size:9px}
+  html.world .scorecard .fruits{order:2;flex:1;min-width:0;display:flex;flex-wrap:nowrap;justify-content:flex-start;gap:2px;margin:0;padding:0;overflow-x:auto;scrollbar-width:none}
+  html.world .scorecard .fruits::-webkit-scrollbar{display:none}
+  html.world .scorecard .fruit{flex:none;width:20px;height:24px;max-width:none}
+  html.world .scorecard .fruit svg{width:16px;height:16px}
+  html.world .scorecard .fruit .fpts,html.world .scorecard .fruit .ftip{display:none}
+  html.world .scorecard .sc-val{order:3;flex:none;font-size:11px}
+  html.world .scorecard .sc-val b{font-size:12px}
+  html.world .scorecard p{display:none}
+  html.world .wctrl{bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+  html.world .wcomment{top:12px;right:12px;padding:4px 12px 4px 4px;font-size:13px}
+  html.world .wcomment .wcm-ic{width:30px;height:30px}
+}
+
 /* ---------- Edit mode ---------- */
 .edit-bar{position:fixed;top:calc(18px + var(--banner-h) + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;max-width:calc(100% - 140px)}
 .eb{min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid var(--ink);background:var(--sheet);color:var(--ink);cursor:pointer;font-size:14px;font-weight:500;transition:background .2s}
@@ -1850,7 +1902,7 @@ function hlLog(event, extra){
   if(!LOG_URL || (window.claude && typeof window.claude.use==='function')) return;
   let avatar=''; try{ avatar=localStorage.getItem('hl-avatar')||''; }catch(_){}
   const body=JSON.stringify(Object.assign({event, vid:hlVid(), avatar, page:VIEW, ref:(document.referrer||'').slice(0,200)}, extra||{}));
-  try{ fetch(LOG_URL,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body}); }catch(_){}
+  try{ fetch(LOG_URL,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body}).catch(()=>{}); }catch(_){}
 }
 // ---------- Avatar picker (world view): "Select your designer", opens on load until the visitor picks or skips ----------
 const AVKEY='hl-avatar', AVSKIP='hl-avatar-skip';
@@ -2015,6 +2067,31 @@ if(VIEW==='world'){
   avBtnRender();
   let skipped=false; try{ skipped=sessionStorage.getItem(AVSKIP)==='1'; }catch(_){}
   if(!avGet() && !skipped) setTimeout(()=>{ if(!avGet()) avOpen(); }, 3000);
+}
+
+
+// ---------- Switch view (map view): one button that offers the timeline or the slideshow ----------
+if(VIEW==='world'){
+  const old=document.getElementById('worldBtn');
+  const inClaude=!!(window.claude && typeof window.claude.use==='function');
+  const wrapEl=document.createElement('div'); wrapEl.className='sw-wrap';
+  const btn=document.createElement('button'); btn.type='button'; btn.className='world-btn'; btn.id='swBtn'; btn.setAttribute('aria-haspopup','true'); btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-controls','swMenu');
+  btn.innerHTML='<span>Switch View</span><svg width="14" height="14" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
+  const menu=document.createElement('div'); menu.className='sw-menu'; menu.id='swMenu'; menu.hidden=true; menu.setAttribute('role','menu');
+  const ic=d=>`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  menu.innerHTML=
+    `<a role="menuitem" class="cur" aria-current="page" href="#">${ic('<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>')}Mario World view<small>You are here</small></a>`+
+    `<a role="menuitem" id="swTimeline" href="${inClaude?'#timeline':'timeline.html'}">${ic('<path d="M3 12h18"/><circle cx="7" cy="12" r="2"/><circle cx="14" cy="12" r="2"/><path d="M7 6v2M14 16v2M19 9v6"/>')}Timeline view<small>Scroll through my career</small></a>`+
+    `<a role="menuitem" id="swSlides" href="https://theindieconsultant.github.io/mywork/?view=slideshow">${ic('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>')}Slideshow view<small>Back to my deck room</small></a>`;
+  wrapEl.append(btn, menu);
+  if(old){ old.after(wrapEl); old.hidden=true; old.style.display='none'; } else document.querySelector('.topbar .wrap').append(wrapEl);
+  const setOpen=on=>{ menu.hidden=!on; btn.setAttribute('aria-expanded', on?'true':'false'); if(on){ const f=menu.querySelector('a:not(.cur)'); if(f) f.focus({preventScroll:true}); } };
+  btn.addEventListener('click',e=>{ e.stopPropagation(); setOpen(menu.hidden); });
+  document.addEventListener('click',e=>{ if(!wrapEl.contains(e.target)) setOpen(false); });
+  wrapEl.addEventListener('keydown',e=>{ if(e.key==='Escape' && !menu.hidden){ e.stopPropagation(); setOpen(false); btn.focus(); } });
+  menu.querySelector('.cur').addEventListener('click',e=>{ e.preventDefault(); setOpen(false); });
+  menu.querySelector('#swSlides').addEventListener('click',()=>{ try{ localStorage.setItem('deckroom-thumbs','1'); }catch(_){} });
+  menu.querySelector('#swTimeline').addEventListener('click',e=>{ if(inClaude){ e.preventDefault(); location.hash='timeline'; } });
 }
 
 applyStatic(); layout(); renderFruits();
