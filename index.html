@@ -678,7 +678,7 @@ html.world .world-hint{display:block}
 .wc-head strong{display:block;font-family:var(--display);font-size:19px;line-height:1.05}
 .wc-head small{display:block;font-size:13px;color:var(--ink-2);margin-top:2px;line-height:1.3}
 .wc-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-family:var(--mono);font-size:12px}
-.wc-dates{background:var(--ink);color:var(--lime);padding:3px 8px;border-radius:999px}
+.wc-dates{background:#15171d;color:#d5f53c;padding:3px 8px;border-radius:999px}
 .wc-found{color:var(--ink-2)}
 .wc-fruit{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-weight:700;color:var(--ink)}
 .wc-fruit svg{display:block;image-rendering:pixelated}
@@ -739,6 +739,25 @@ html.world .world-hint{display:block}
   html.world .wctrl{bottom:calc(20px + env(safe-area-inset-bottom,0px))}
   html.world .wcomment{top:12px;right:12px;padding:4px 12px 4px 4px;font-size:13px}
   html.world .wcomment .wcm-ic{width:30px;height:30px}
+}
+
+
+/* timeline view: desktop keeps the map preview card; phones get the same header and Switch View as the map */
+.sw-wrap.tl{display:none}
+.sw-wrap.tl .sw-menu{left:auto;right:0}
+@media (max-width:760px){
+  html:not(.world){--black-h:76px}
+  html:not(.world) .gb-back{display:none}
+  html:not(.world) .gb-main{padding-left:88px!important;padding-right:16px;justify-content:center;font-size:clamp(17px,5vw,21px)!important;line-height:1.15}
+  html:not(.world) .topbar{z-index:26}
+  html:not(.world) .topbar .wrap{justify-content:flex-end}
+  html:not(.world) .topbar .mark{position:fixed;left:max(18px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + (var(--black-h) - 48px)/2);color:#ffffff}
+  html:not(.world) .topbar .mark svg{width:46px}
+  html:not(.world) .world-btn.card{display:none}
+  .sw-wrap.tl{display:block}
+  .sw-wrap.tl .world-btn{min-height:48px;padding:0 18px;font-size:16px}
+  .sw-wrap.tl .wtip{display:none}
+  html:not(.world) .stage-head{padding-top:calc(84px + var(--banner-h) + env(safe-area-inset-top,0px))}
 }
 
 /* ---------- Edit mode ---------- */
@@ -2070,28 +2089,30 @@ if(VIEW==='world'){
 }
 
 
-// ---------- Switch view (map view): one button that offers the timeline or the slideshow ----------
-if(VIEW==='world'){
+// ---------- Switch view: one button that offers the other views (map view always; timeline view on phones) ----------
+{
   const old=document.getElementById('worldBtn');
   const inClaude=!!(window.claude && typeof window.claude.use==='function');
   const wrapEl=document.createElement('div'); wrapEl.className='sw-wrap';
   const btn=document.createElement('button'); btn.type='button'; btn.className='world-btn'; btn.id='swBtn'; btn.setAttribute('aria-haspopup','true'); btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-controls','swMenu');
+  if(VIEW!=='world') wrapEl.classList.add('tl');
   btn.innerHTML='<span>Switch View</span><svg width="14" height="14" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
   const menu=document.createElement('div'); menu.className='sw-menu'; menu.id='swMenu'; menu.hidden=true; menu.setAttribute('role','menu');
   const ic=d=>`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const isW=VIEW==='world', here=c=>c?' class="cur" aria-current="page"':'';
   menu.innerHTML=
-    `<a role="menuitem" class="cur" aria-current="page" href="#">${ic('<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>')}Mario World view<small>You are here</small></a>`+
-    `<a role="menuitem" id="swTimeline" href="${inClaude?'#timeline':'timeline.html'}">${ic('<path d="M3 12h18"/><circle cx="7" cy="12" r="2"/><circle cx="14" cy="12" r="2"/><path d="M7 6v2M14 16v2M19 9v6"/>')}Timeline view<small>Scroll through my career</small></a>`+
+    `<a role="menuitem" id="swWorld"${here(isW)} href="${inClaude?'#':'./'}">${ic('<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>')}Mario World view<small>${isW?'You are here':'Play the resume game'}</small></a>`+
+    `<a role="menuitem" id="swTimeline"${here(!isW)} href="${inClaude?'#timeline':'timeline.html'}">${ic('<path d="M3 12h18"/><circle cx="7" cy="12" r="2"/><circle cx="14" cy="12" r="2"/><path d="M7 6v2M14 16v2M19 9v6"/>')}Timeline view<small>${isW?'Scroll through my career':'You are here'}</small></a>`+
     `<a role="menuitem" id="swSlides" href="https://theindieconsultant.github.io/mywork/?view=slideshow">${ic('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>')}Slideshow view<small>Back to my deck room</small></a>`;
   wrapEl.append(btn, menu);
-  if(old){ old.after(wrapEl); old.hidden=true; old.style.display='none'; } else document.querySelector('.topbar .wrap').append(wrapEl);
+  if(old){ old.after(wrapEl); if(isW){ old.hidden=true; old.style.display='none'; } } else document.querySelector('.topbar .wrap').append(wrapEl);
   const setOpen=on=>{ menu.hidden=!on; btn.setAttribute('aria-expanded', on?'true':'false'); if(on){ const f=menu.querySelector('a:not(.cur)'); if(f) f.focus({preventScroll:true}); } };
   btn.addEventListener('click',e=>{ e.stopPropagation(); setOpen(menu.hidden); });
   document.addEventListener('click',e=>{ if(!wrapEl.contains(e.target)) setOpen(false); });
   wrapEl.addEventListener('keydown',e=>{ if(e.key==='Escape' && !menu.hidden){ e.stopPropagation(); setOpen(false); btn.focus(); } });
-  menu.querySelector('.cur').addEventListener('click',e=>{ e.preventDefault(); setOpen(false); });
   menu.querySelector('#swSlides').addEventListener('click',()=>{ try{ localStorage.setItem('deckroom-thumbs','1'); }catch(_){} });
-  menu.querySelector('#swTimeline').addEventListener('click',e=>{ if(inClaude){ e.preventDefault(); location.hash='timeline'; } });
+  menu.querySelector('#swTimeline').addEventListener('click',e=>{ if(!isW){ e.preventDefault(); setOpen(false); return; } if(inClaude){ e.preventDefault(); location.hash='timeline'; } });
+  menu.querySelector('#swWorld').addEventListener('click',e=>{ if(isW){ e.preventDefault(); setOpen(false); return; } if(inClaude){ e.preventDefault(); location.hash=''; } });
 }
 
 applyStatic(); layout(); renderFruits();
