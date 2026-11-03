@@ -372,7 +372,18 @@ p{margin:0}
 .f-foot{position:relative;z-index:2;margin-top:auto}
 /* fixed modal height, so Previous / Next sit in the same spot on every tab */
 .folder{height:min(760px,100%)}
-@media (max-width:640px){.folder{height:auto}}
+/* phones: the file fills the screen, its content scrolls, and the footer (fruit + Previous / Next) stays pinned at the bottom */
+@media (max-width:640px){
+  .folder-wrap{padding:calc(10px + env(safe-area-inset-top,0px)) 10px calc(10px + env(safe-area-inset-bottom,0px))}
+  .folder{height:calc(100vh - 20px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100dvh - 20px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));max-height:none;width:100%}
+  .f-body{min-height:0}
+  .f-front{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:0}
+  .f-front > *{flex-shrink:0}
+  .f-top{position:sticky;top:0;align-self:flex-end;margin-bottom:-52px;right:auto}
+  .f-foot{position:sticky;bottom:0;z-index:4;flex-wrap:wrap;row-gap:8px;margin:auto calc(-1 * clamp(18px,3.4vw,36px)) 0;padding:10px clamp(18px,3.4vw,36px) 12px;background:var(--folder);border-top:1.5px solid color-mix(in srgb,var(--folder-ink) 25%,transparent);box-shadow:0 -10px 18px -12px rgba(0,0,0,.35)}
+  .f-nav button{min-height:40px}
+  .f-tabs{scroll-snap-type:x proximity}
+}
 .f-img.stacked{display:flex;flex-direction:column;gap:2px;background:#ffffff}
 .f-img.stacked img{position:relative;inset:auto;flex:1 1 0;min-height:0;opacity:1}
 .f-front:has(.f-pane.has-img) .f-stage{position:static}
